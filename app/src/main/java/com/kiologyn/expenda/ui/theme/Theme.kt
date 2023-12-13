@@ -10,21 +10,14 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    surface = Color(0xFF101010),
-    onSurface = Color(0xFFEEEEEE),
-)
+private val DarkColorScheme = darkColorScheme()
 
-private val LightColorScheme = lightColorScheme(
-    surface = Color(0xFFFFFFFF),
-    onSurface = Color(0xFF000000),
-)
+private val LightColorScheme = lightColorScheme()
 
 @Composable
 fun ExpendaTheme(
