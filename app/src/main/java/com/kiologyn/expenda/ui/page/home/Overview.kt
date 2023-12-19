@@ -76,7 +76,7 @@ fun RecordCard(
                 )
                 Text(
                     date.format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy")),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = LocalExpendaColors.current.grayText,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Normal,
                 )

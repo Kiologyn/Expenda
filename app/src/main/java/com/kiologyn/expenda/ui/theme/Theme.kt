@@ -20,23 +20,62 @@ import androidx.core.view.WindowCompat
 data class ExpendaColors(
     val onSurfaceRed: Color = Color.Unspecified,
     val onSurfaceGreen: Color = Color.Unspecified,
+    val grayText: Color = Color.Unspecified
 )
 val LocalExpendaColors = staticCompositionLocalOf { ExpendaColors() }
 
 private val DarkColorScheme = darkColorScheme(
-    onSurfaceVariant = Color(0xFF818181)
+    background = Black10,
+    surface = Black10,
+    onSurface = Color(0xFFE6E0E9),
+    surfaceTint = Color(0xFFFFE9BD),
+
+    primary = Color(0xFFFFE9BD),
+    onPrimary = Color(0xFF73561E),
+    primaryContainer = Color(0xFF8C7038),
+    onPrimaryContainer = Color(0xFFFFF4DE),
+
+    secondary = Color(0xFFDBD3C1),
+    onSecondary = Color(0xFF40392C),
+    secondaryContainer = Color(0xFF595245),
+    onSecondaryContainer = Color(0xFFF7EFDF),
+
+    tertiary = Color(0xFFB9F0C1),
+    onTertiary = Color(0xFF264A2B),
+    tertiaryContainer = Color(0xFF3C6342),
+    onTertiaryContainer = Color(0xFFD9FFDE),
 )
 private val DarkColors = ExpendaColors(
     onSurfaceRed = Color(0xFFE01C1C),
     onSurfaceGreen = Color(0xFF11D111),
+    grayText = Color(0xFF333333),
 )
 
 private val LightColorScheme = lightColorScheme(
-    onSurfaceVariant = Color(0xFF727272)
+    background = WhiteBack,
+    surface = WhiteBack,
+    onSurface = Color(0xFF1D1B20),
+    surfaceTint = Color(0xFFA38750),
+
+    primary = Color(0xFFA38750),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFFFF4DE),
+    onPrimaryContainer = Color(0xFF5C3D00),
+
+    secondary = Color(0xFF70695B),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFF7EFDF),
+    onSecondaryContainer = Color(0xFF2B2519),
+
+    tertiary = Color(0xFF527D59),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFD9FFDE),
+    onTertiaryContainer = Color(0xFF113016),
 )
 private val LightColors = ExpendaColors(
     onSurfaceRed = Color(0xFFFF0000),
     onSurfaceGreen = Color(0xFF00CF00),
+    grayText = Color(0xFF333333),
 )
 
 @Composable

@@ -1,6 +1,5 @@
 package com.kiologyn.expenda.ui
 
-import android.content.res.Configuration
 import com.kiologyn.expenda.ui.page.*
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kiologyn.expenda.ui.page.home.Home
+import com.kiologyn.expenda.ui.theme.ExpendaTheme
 
 
 private data class PageItem (
@@ -108,6 +108,6 @@ fun Navigation() {
     )
 }
 
+@Preview
 @Composable
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun NavigationPreview() = Navigation()
+fun NavigationPreview() = ExpendaTheme(true) { Navigation() }
