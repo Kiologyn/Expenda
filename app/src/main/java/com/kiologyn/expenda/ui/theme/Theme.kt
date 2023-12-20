@@ -20,7 +20,10 @@ import androidx.core.view.WindowCompat
 data class ExpendaColors(
     val onSurfaceRed: Color = Color.Unspecified,
     val onSurfaceGreen: Color = Color.Unspecified,
-    val grayText: Color = Color.Unspecified
+    val arrowRed: Color = Color.Unspecified,
+    val arrowGreen: Color = Color.Unspecified,
+    val arrowsGray: Color = Color.Unspecified,
+    val grayText: Color = Color.Unspecified,
 )
 val LocalExpendaColors = staticCompositionLocalOf { ExpendaColors() }
 
@@ -48,7 +51,10 @@ private val DarkColorScheme = darkColorScheme(
 private val DarkColors = ExpendaColors(
     onSurfaceRed = Color(0xFFE01C1C),
     onSurfaceGreen = Color(0xFF11D111),
-    grayText = Color(0xFF333333),
+    arrowRed = Color(0xFFCE2F2F),
+    arrowGreen = Color(0xFF35AC35),
+    arrowsGray = Color(0xFF888888),
+    grayText = Color(0xFF666666),
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -75,7 +81,10 @@ private val LightColorScheme = lightColorScheme(
 private val LightColors = ExpendaColors(
     onSurfaceRed = Color(0xFFFF0000),
     onSurfaceGreen = Color(0xFF00CF00),
-    grayText = Color(0xFF333333),
+    arrowRed = Color(0xFFAF3030),
+    arrowGreen = Color(0xFF35AC35),
+    arrowsGray = Color(0xFF777777),
+    grayText = Color(0xFF999999),
 )
 
 @Composable
