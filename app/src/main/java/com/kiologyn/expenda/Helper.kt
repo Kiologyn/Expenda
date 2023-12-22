@@ -12,14 +12,19 @@ class Helper {
 
         const val DATE_FORMAT: String = "dd.MM.yyyy"
         val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
+
+
+        const val DATABASE_NAME = "database"
+
+        const val SHARED_PREFERENCES_SETTINGS_NAME = "settings"
     }
 }
 
 fun LocalDateTime.toMilliseconds(): Long {
     return this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
-fun localDateTimeFromMilliseconds(milliseconds: Long): LocalDateTime {
-    return LocalDateTime.ofInstant(Instant.ofEpochMilli(milliseconds), ZoneId.systemDefault())
+fun Long.toLocalDateTime(): LocalDateTime {
+    return LocalDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
 }
 fun LocalDateTime.formatTime(): String {
     return this.format(Helper.timeFormatter)

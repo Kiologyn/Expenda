@@ -63,7 +63,7 @@ import androidx.compose.material3.rememberTimePickerState
 import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.formatDate
 import com.kiologyn.expenda.formatTime
-import com.kiologyn.expenda.localDateTimeFromMilliseconds
+import com.kiologyn.expenda.toLocalDateTime
 import com.kiologyn.expenda.toMilliseconds
 import java.time.LocalDateTime
 
@@ -205,9 +205,7 @@ fun DatePickerElement(
         picker = { DatePicker(state = datePickerState) },
         datePickerText,
         onConfirm = {
-            dateTimeState.value = localDateTimeFromMilliseconds(
-                datePickerState.selectedDateMillis ?: 0
-            )
+            dateTimeState.value = (datePickerState.selectedDateMillis ?: 0).toLocalDateTime()
             datePickerText.value = dateTimeState.value.formatDate()
         },
     )

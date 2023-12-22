@@ -12,7 +12,6 @@ import com.kiologyn.expenda.ui.theme.ExpendaTheme
 
 class MainActivity : ComponentActivity() {
     private val TAG = "MainActivity"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
