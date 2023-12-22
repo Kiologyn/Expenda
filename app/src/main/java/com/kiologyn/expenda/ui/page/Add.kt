@@ -10,17 +10,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableDoubleState
 import androidx.compose.runtime.MutableState
@@ -50,6 +57,16 @@ import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.ui.theme.LocalExpendaColors
 import kotlinx.coroutines.launch
 
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
+import com.kiologyn.expenda.Helper
+import com.kiologyn.expenda.formatDate
+import com.kiologyn.expenda.formatTime
+import com.kiologyn.expenda.localDateTimeFromMilliseconds
+import com.kiologyn.expenda.toMilliseconds
+import java.time.LocalDateTime
+
 @Composable
 fun Add() {
     Column(
@@ -57,48 +74,155 @@ fun Add() {
             .fillMaxSize()
             .padding(20.dp, 50.dp)
         ,
-        verticalArrangement = Arrangement.spacedBy(30.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         val LINE_HEIGHT = 50.dp
 
-        val isIncome = rememberSaveable { mutableStateOf(false) }
-        val amount = rememberSaveable { mutableDoubleStateOf(0.toDouble()) }
+        val dateTimeState = remember { mutableStateOf(LocalDateTime.now()) }
+        val isIncomeState = rememberSaveable { mutableStateOf(false) }
+        val amountState = rememberSaveable { mutableDoubleStateOf(0.toDouble()) }
 
-        DateTimePicker()
-        Spacer(modifier = Modifier)
+        DateTimePicker(
+            modifier = Modifier.height(LINE_HEIGHT),
+            dateTimeState = dateTimeState,
+        )
 
         Row(
             modifier = Modifier.height(LINE_HEIGHT),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            ArrowButton(size = LINE_HEIGHT, typeState = isIncome, onClick = { /*TODO*/ })
+            ArrowButton(size = LINE_HEIGHT, typeState = isIncomeState, onClick = { /*TODO*/ })
             AmountInput(
                 modifier = Modifier
                     .weight(1f)
                     .height(LINE_HEIGHT)
                 ,
-                amountState = amount,
+                amountState = amountState,
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PickerContainer() {
+fun PickerContainer(
+    modifier: Modifier = Modifier,
+    picker: @Composable () -> Unit,
+    pickerText: MutableState<String>,
+    onConfirm: () -> Unit,
+) {
+    var openDialog by remember { mutableStateOf(false) }
 
+    Box(
+        modifier = modifier
+            .background(Black30, RoundedCornerShape(15.dp))
+            .clickable(onClick = {
+                openDialog = true
+            })
+        ,
+        contentAlignment = Alignment.Center
+    ) {
+        Text(pickerText.value)
+        Icon(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 10.dp)
+            ,
+            imageVector = Icons.Default.ArrowDropDown,
+            contentDescription = null,
+            tint = Color.Gray,
+        )
+
+        if (openDialog) {
+            DatePickerDialog(
+                onDismissRequest = {
+                    openDialog = false
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            openDialog = false
+                            onConfirm()
+                        },
+                    ) {
+                        Text("OK")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            openDialog = false
+                        }
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            ) {
+                picker()
+            }
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimePickerElement(
+    modifier: Modifier = Modifier,
+    dateTimeState: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now()) },
+) {
+    val timePickerState = rememberTimePickerState(
+        initialHour = dateTimeState.value.hour,
+        initialMinute = dateTimeState.value.minute,
+    )
+    val timePickerText = remember { mutableStateOf(
+        dateTimeState.value.format(Helper.timeFormatter)
+    ) }
+    PickerContainer(
+        modifier = modifier,
+        picker = { TimePicker(state = timePickerState) },
+        timePickerText,
+        onConfirm = {
+            dateTimeState.value = dateTimeState.value
+                .withHour(timePickerState.hour)
+                .withMinute(timePickerState.minute)
+            timePickerText.value = dateTimeState.value.formatTime()
+        },
+    )
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePickerElement(
+    modifier: Modifier = Modifier,
+    dateTimeState: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now()) },
+) {
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = dateTimeState.value.toMilliseconds(),
+    )
+    val datePickerText = remember { mutableStateOf(
+        dateTimeState.value.formatDate()
+    ) }
+    PickerContainer(
+        modifier = modifier,
+        picker = { DatePicker(state = datePickerState) },
+        datePickerText,
+        onConfirm = {
+            dateTimeState.value = localDateTimeFromMilliseconds(
+                datePickerState.selectedDateMillis ?: 0
+            )
+            datePickerText.value = dateTimeState.value.formatDate()
+        },
+    )
 }
 @Composable
 fun DateTimePicker(
     modifier: Modifier = Modifier,
-
+    dateTimeState: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now()) },
 ) {
     Row(
-        modifier = Modifier
-            .background(Color.Red)
-            .height(30.dp)
-        ,
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-
+        TimePickerElement(modifier.weight(1f), dateTimeState)
+        DatePickerElement(modifier.weight(1f), dateTimeState)
     }
 }
 
