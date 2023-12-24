@@ -17,10 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Room
+import com.kiologyn.expenda.Helper
+import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.Record
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
@@ -30,6 +34,9 @@ import com.kiologyn.expenda.ui.page.add.component.ArrowButton
 import com.kiologyn.expenda.ui.page.add.component.DateTimePicker
 import com.kiologyn.expenda.ui.page.add.component.DescriptionInput
 import com.kiologyn.expenda.ui.page.add.component.categorypicker.CategoryPicker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @Composable
@@ -101,6 +108,38 @@ fun Add() {
                 ,
                 descriptionState,
             )
+        }
+
+        val localContext = LocalContext.current
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(LINE_HEIGHT)
+            ,
+            onClick = {
+                if (
+                    amountState.value == null ||
+                    subcategoryState.value == null
+                ) return@Button
+
+                val record = Record(
+                    datetime = dateTimeState.value.toMilliseconds(),
+                    amount = (if (isIncomeState.value) 1 else -1) * amountState.value!!,
+                    description = descriptionState.value,
+                    idSubcategory = subcategoryState.value!!.id
+                )
+                CoroutineScope(Dispatchers.IO).launch {
+                    val db = Room.databaseBuilder(
+                        localContext,
+                        ExpendaDatabase::class.java,
+                        Helper.DATABASE_NAME,
+                    ).build()
+
+                    db.recordDao().insert(record)
+                }
+            }
+        ) {
+            Text("Add", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
