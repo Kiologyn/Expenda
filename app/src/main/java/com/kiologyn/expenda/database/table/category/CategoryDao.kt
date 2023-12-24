@@ -11,4 +11,12 @@ interface CategoryDao {
         SELECT :name
     """)
     fun create(name: String)
+    @Query("""
+        SELECT * FROM category
+    """)
+    suspend fun getAll(): List<Category>
+    @Query("""
+        SELECT * FROM category WHERE category.id = :id
+    """)
+    suspend fun getById(id: Int): Category?
 }

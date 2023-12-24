@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
 class ExpendaApp : Application() {
     val DEFAULT_CATEGORIES: Map<String, List<String>> = mapOf(
         "Food" to listOf(
@@ -48,7 +49,7 @@ class ExpendaApp : Application() {
 
         sharedPreferences = applicationContext.getSharedPreferences(Helper.SHARED_PREFERENCES_SETTINGS_NAME, Context.MODE_PRIVATE)
 
-        if (!isDefaultCategoriesAdded()) {
+        if (!isDefaultCategoriesAdded())
             CoroutineScope(Dispatchers.IO).launch {
                 val db = Room.databaseBuilder(
                     applicationContext,
@@ -67,7 +68,6 @@ class ExpendaApp : Application() {
 
                 setIsDefaultCategoriesAddedTrue()
             }
-        }
     }
 
     private fun isDefaultCategoriesAdded(): Boolean =

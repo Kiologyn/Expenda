@@ -73,6 +73,7 @@ dependencies {
 
     // Storage Room
     val roomVersion = "2.6.1"
+    implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.room:room-runtime:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
 }

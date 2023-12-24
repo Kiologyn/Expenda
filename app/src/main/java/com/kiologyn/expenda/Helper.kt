@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+
 class Helper {
     companion object {
         const val TIME_FORMAT: String = "HH:mm"
@@ -13,6 +14,8 @@ class Helper {
         const val DATE_FORMAT: String = "dd.MM.yyyy"
         val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
 
+        const val DATETIME_FORMAT: String = "$TIME_FORMAT $DATE_FORMAT"
+        val datetimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(DATETIME_FORMAT)
 
         const val DATABASE_NAME = "database"
 

@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,12 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.R
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.ui.theme.LocalExpendaColors
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -75,7 +74,7 @@ fun RecordCard(
                     fontSize = 15.sp,
                 )
                 Text(
-                    date.format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy")),
+                    date.format(Helper.datetimeFormatter),
                     color = LocalExpendaColors.current.grayText,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Normal,

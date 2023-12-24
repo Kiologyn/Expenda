@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kiologyn.expenda.ui.page.add.Add
 import com.kiologyn.expenda.ui.page.home.Home
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 
@@ -79,9 +80,9 @@ fun Navigation() {
 
         content = {padding ->
             NavHost(
-                navController,
-                pages[START_PAGE_INDEX].name,
-                Modifier.padding(padding)
+                modifier = Modifier.padding(padding),
+                navController = navController,
+                startDestination = pages[START_PAGE_INDEX].name,
             ) {
                 for (page in pages) composable(page.name) { (page.page)() }
             }
@@ -97,6 +98,7 @@ fun Navigation() {
                         onClick = {
                             if (rememberedPageIndexState != index) {
                                 rememberedPageIndexState = index
+                                navController.popBackStack()
                                 navController.navigate(page.name)
                             }
                         },

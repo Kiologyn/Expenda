@@ -28,55 +28,81 @@ data class ExpendaColors(
 val LocalExpendaColors = staticCompositionLocalOf { ExpendaColors() }
 
 private val DarkColorScheme = darkColorScheme(
-    background = Black10,
-    surface = Black10,
-    onSurface = Color(0xFFE6E0E9),
-    surfaceTint = Color(0xFFFFE9BD),
+    primary = Color(0xFFE7E7E7),
+    onPrimary = Color(0xFF3C3C3C),
+    primaryContainer = Color(0xFF565656),
+    onPrimaryContainer = Color(0xFFFFFFFF),
 
-    primary = Color(0xFFFFE9BD),
-    onPrimary = Color(0xFF73561E),
-    primaryContainer = Color(0xFF8C7038),
-    onPrimaryContainer = Color(0xFFFFF4DE),
+    secondary = Color(0xFFD4D4D4),
+    onSecondary = Color(0xFF383838),
+    secondaryContainer = Color(0xFF4F4F4F),
+    onSecondaryContainer = Color(0xFFF0F0F0),
 
-    secondary = Color(0xFFDBD3C1),
-    onSecondary = Color(0xFF40392C),
-    secondaryContainer = Color(0xFF595245),
-    onSecondaryContainer = Color(0xFFF7EFDF),
+    tertiary = Color(0xFFCFCFCF),
+    onTertiary = Color(0xFF373737),
+    tertiaryContainer = Color(0xFF4E4E4E),
+    onTertiaryContainer = Color(0xFFECECEC),
 
-    tertiary = Color(0xFFB9F0C1),
-    onTertiary = Color(0xFF264A2B),
-    tertiaryContainer = Color(0xFF3C6342),
-    onTertiaryContainer = Color(0xFFD9FFDE),
+    error = Color(0xFFFFB4AB),
+    errorContainer = Color(0xFF93000A),
+    onError = Color(0xFF690005),
+    onErrorContainer = Color(0xFFFFDAD6),
+
+    background = Color(0xFF1E1E1E),
+    onBackground = Color(0xFFE8E8E8),
+
+    surface = Color(0xFF1E1E1E),
+    onSurface = Color(0xFFE8E8E8),
+    surfaceVariant = Color(0xFF4C4C4C),
+    onSurfaceVariant = Color(0xFFCECECE),
+
+    outline = Color(0xFF979797),
+    inverseOnSurface = Color(0xFF1E1E1E),
+    inverseSurface = Color(0xFFE8E8E8),
+    inversePrimary = Color(0xFF727272),
+    surfaceTint = Color(0xFFE7E7E7),
+    outlineVariant = Color(0xFF4C4C4C),
+    scrim = Color(0xFF000000),
 )
 private val DarkColors = ExpendaColors(
     onSurfaceRed = Color(0xFFE01C1C),
     onSurfaceGreen = Color(0xFF11D111),
-    arrowRed = Color(0xFFCE2F2F),
+    arrowRed = Color(0xFFDB2727),
     arrowGreen = Color(0xFF35AC35),
     arrowsGray = Color(0xFF888888),
     grayText = Color(0xFF666666),
 )
 
 private val LightColorScheme = lightColorScheme(
-    background = WhiteBack,
-    surface = WhiteBack,
-    onSurface = Color(0xFF1D1B20),
-    surfaceTint = Color(0xFFA38750),
-
-    primary = Color(0xFFA38750),
+    primary = Color(0xFF725C00),
     onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFFFF4DE),
-    onPrimaryContainer = Color(0xFF5C3D00),
-
-    secondary = Color(0xFF70695B),
+    primaryContainer = Color(0xFFFFE080),
+    onPrimaryContainer = Color(0xFF231B00),
+    secondary = Color(0xFF685E40),
     onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFFF7EFDF),
-    onSecondaryContainer = Color(0xFF2B2519),
-
-    tertiary = Color(0xFF527D59),
+    secondaryContainer = Color(0xFFF0E1BB),
+    onSecondaryContainer = Color(0xFF221B04),
+    tertiary = Color(0xFF45664C),
     onTertiary = Color(0xFFFFFFFF),
-    tertiaryContainer = Color(0xFFD9FFDE),
-    onTertiaryContainer = Color(0xFF113016),
+    tertiaryContainer = Color(0xFFC7ECCB),
+    onTertiaryContainer = Color(0xFF02210D),
+    error = Color(0xFFBA1A1A),
+    errorContainer = Color(0xFFFFDAD6),
+    onError = Color(0xFFFFFFFF),
+    onErrorContainer = Color(0xFF410002),
+    background = Color(0xFFFFFBFF),
+    onBackground = Color(0xFF1E1B16),
+    surface = Color(0xFFFFFBFF),
+    onSurface = Color(0xFF1E1B16),
+    surfaceVariant = Color(0xFFEBE2CF),
+    onSurfaceVariant = Color(0xFF4C4639),
+    outline = Color(0xFF7D7667),
+    inverseOnSurface = Color(0xFFF6F0E7),
+    inverseSurface = Color(0xFF33302A),
+    inversePrimary = Color(0xFFE7C349),
+    surfaceTint = Color(0xFF725C00),
+    outlineVariant = Color(0xFFCEC6B4),
+    scrim = Color(0xFF000000),
 )
 private val LightColors = ExpendaColors(
     onSurfaceRed = Color(0xFFFF0000),
@@ -89,7 +115,7 @@ private val LightColors = ExpendaColors(
 
 @Composable
 fun ExpendaTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme =

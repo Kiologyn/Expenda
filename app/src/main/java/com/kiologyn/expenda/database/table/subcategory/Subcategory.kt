@@ -19,5 +19,5 @@ import com.kiologyn.expenda.database.table.category.Category
 data class Subcategory(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val idCategory: Int? = null,
+    val idCategory: Int,
 )
