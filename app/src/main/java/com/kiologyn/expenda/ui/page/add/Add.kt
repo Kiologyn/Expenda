@@ -5,22 +5,30 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.kiologyn.expenda.database.table.record.Record
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
+import com.kiologyn.expenda.toMilliseconds
 import com.kiologyn.expenda.ui.page.add.component.AmountInput
 import com.kiologyn.expenda.ui.page.add.component.ArrowButton
 import com.kiologyn.expenda.ui.page.add.component.DateTimePicker
+import com.kiologyn.expenda.ui.page.add.component.DescriptionInput
 import com.kiologyn.expenda.ui.page.add.component.categorypicker.CategoryPicker
 import java.time.LocalDateTime
 
@@ -41,7 +49,7 @@ fun Add() {
         val isIncomeState = remember { mutableStateOf(false) }
         val amountState = remember { mutableStateOf(null as Double?) }
         val subcategoryState = remember { mutableStateOf(null as Subcategory?) }
-        // TODO: descriptionState
+        val descriptionState = remember { mutableStateOf("") }
 
         Column(
             modifier = Modifier
@@ -78,10 +86,20 @@ fun Add() {
 
             CategoryPicker(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .height(LINE_HEIGHT)
                     .background(ELEMENTS_BACKGROUND, RoundedCornerShape(BORDER_RADIUS))
                 ,
                 subcategoryState,
+            )
+
+            DescriptionInput(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(LINE_HEIGHT*3)
+                    .background(ELEMENTS_BACKGROUND, RoundedCornerShape(BORDER_RADIUS))
+                ,
+                descriptionState,
             )
         }
     }

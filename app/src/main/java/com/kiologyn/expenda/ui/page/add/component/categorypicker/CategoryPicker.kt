@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -67,7 +66,6 @@ fun CategoryPicker(
 
     Box(
         modifier = modifier
-            .fillMaxWidth()
             .clickable {
                 startForResult?.launch(Intent(localContext, CategorySelectorActivity::class.java))
             }
