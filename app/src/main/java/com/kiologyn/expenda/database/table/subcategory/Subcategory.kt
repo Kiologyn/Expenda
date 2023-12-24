@@ -7,6 +7,7 @@ import com.kiologyn.expenda.database.table.category.Category
 
 
 @Entity(
+    tableName = "subcategory",
     foreignKeys = [
         ForeignKey(
             entity = Category::class,
