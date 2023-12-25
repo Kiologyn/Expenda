@@ -20,6 +20,7 @@ import androidx.core.view.WindowCompat
 data class ExpendaColors(
     val onSurfaceRed: Color = Color.Unspecified,
     val onSurfaceGreen: Color = Color.Unspecified,
+    val surfaceContainer: Color = Color.Unspecified,
     val arrowRed: Color = Color.Unspecified,
     val arrowGreen: Color = Color.Unspecified,
     val arrowsGray: Color = Color.Unspecified,
@@ -48,16 +49,16 @@ private val DarkColorScheme = darkColorScheme(
     onError = Color(0xFF690005),
     onErrorContainer = Color(0xFFFFDAD6),
 
-    background = Color(0xFF1E1E1E),
+    background = Color(0xFF151515),
     onBackground = Color(0xFFE8E8E8),
 
-    surface = Color(0xFF1E1E1E),
+    surface = Color(0xFF151515),
     onSurface = Color(0xFFE8E8E8),
     surfaceVariant = Color(0xFF4C4C4C),
     onSurfaceVariant = Color(0xFFCECECE),
 
     outline = Color(0xFF979797),
-    inverseOnSurface = Color(0xFF1E1E1E),
+    inverseOnSurface = Color(0xFF151515),
     inverseSurface = Color(0xFFE8E8E8),
     inversePrimary = Color(0xFF727272),
     surfaceTint = Color(0xFFE7E7E7),
@@ -65,8 +66,9 @@ private val DarkColorScheme = darkColorScheme(
     scrim = Color(0xFF000000),
 )
 private val DarkColors = ExpendaColors(
-    onSurfaceRed = Color(0xFFE01C1C),
+    onSurfaceRed = Color(0xFFE62D2D),
     onSurfaceGreen = Color(0xFF11D111),
+    surfaceContainer = Color(0xFF1E1E1E),
     arrowRed = Color(0xFFDB2727),
     arrowGreen = Color(0xFF35AC35),
     arrowsGray = Color(0xFF888888),
@@ -107,6 +109,7 @@ private val LightColorScheme = lightColorScheme(
 private val LightColors = ExpendaColors(
     onSurfaceRed = Color(0xFFFF0000),
     onSurfaceGreen = Color(0xFF00CF00),
+    surfaceContainer = Color(0xFF303030),
     arrowRed = Color(0xFFAF3030),
     arrowGreen = Color(0xFF35AC35),
     arrowsGray = Color(0xFF777777),

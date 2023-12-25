@@ -1,17 +1,25 @@
 package com.kiologyn.expenda.ui.page.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,18 +29,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.room.Room
 import com.kiologyn.expenda.Helper
-import com.kiologyn.expenda.R
 import com.kiologyn.expenda.database.ExpendaDatabase
-import com.kiologyn.expenda.database.table.record.Record
 import com.kiologyn.expenda.database.table.record.RecordWithSubcategoryName
 import com.kiologyn.expenda.toLocalDateTime
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
@@ -44,13 +50,64 @@ import kotlin.math.abs
 
 @Composable
 fun Overview() {
-    Box(Modifier.fillMaxSize()) {
-        RecordList()
+    Column(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        BalanceView()
+        RecordList(modifier = Modifier.weight(1f))
     }
 }
 
 @Composable
-fun RecordList() {
+fun BalanceView(
+    modifier: Modifier = Modifier,
+) {
+    var balanceValue by remember { mutableStateOf<Int?>(null) }
+
+    val localContext = LocalContext.current
+    LaunchedEffect(true) {
+        val db = Room.databaseBuilder(
+            localContext,
+            ExpendaDatabase::class.java,
+            Helper.DATABASE_NAME,
+        ).build()
+
+        balanceValue = db.recordDao().getBalance()
+    }
+
+    Surface {
+        Column(
+            modifier = modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth()
+                .shadow(0.dp, RoundedCornerShape(30.dp))
+                .padding(50.dp, 20.dp)
+            ,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(text = "Total balance", color = LocalExpendaColors.current.grayText)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                    .padding(40.dp, 5.dp)
+                ,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Text(balanceValue?.toString() ?: "???", fontSize = 30.sp)
+            }
+        }
+    }
+}
+
+@Composable
+fun RecordList(
+    modifier: Modifier = Modifier,
+) {
     var recordsList by remember { mutableStateOf<List<RecordWithSubcategoryName>>(emptyList()) }
 
     val localContext = LocalContext.current
@@ -64,21 +121,50 @@ fun RecordList() {
         recordsList = db.recordDao().getAllWithSubcategoryNamesDESC()
     }
 
-    LazyColumn {
-        items(recordsList) { record: RecordWithSubcategoryName ->
-            RecordCard(
-                category = record.subcategoryName,
-                amount = record.amount,
-                datetime = record.datetime.toLocalDateTime(),
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                LocalExpendaColors.current.surfaceContainer,
+                shape = RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp)
+            )
+        ,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.15f)
+                .padding(top = 10.dp)
+                .clickable {
+                    // TODO: open activity with all records
+                }
+            ,
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.Default.List,
+                contentDescription = "recordsList",
+                tint = LocalExpendaColors.current.grayText,
             )
         }
+
+        LazyColumn {
+            items(recordsList) { record: RecordWithSubcategoryName ->
+                RecordCard(
+                    category = record.subcategoryName,
+                    amount = record.amount,
+                    datetime = record.datetime.toLocalDateTime(),
+                )
+            }
+        }
     }
+
 }
 
 @Composable
 fun RecordCard(
 //    icon: Painter = painterResource(R.drawable.coin),
-    category: String = "???",
+    category: String? = null,
     amount: Double = 0.toDouble(),
     datetime: LocalDateTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC),
     onClick: () -> Unit = {}
@@ -95,7 +181,7 @@ fun RecordCard(
 //                    .height(iconSize)
 //            )
 //        },
-        headlineContent = { Text(category) },
+        headlineContent = { Text(category ?: "???") },
         trailingContent = {
             Column(horizontalAlignment = Alignment.End) {
                 Text(
@@ -115,14 +201,16 @@ fun RecordCard(
                 )
             }
         },
+        colors = ListItemDefaults.colors(
+            containerColor = Color.Transparent,
+        ),
     )
-    Divider()
 }
 
 
 @Composable
-fun RecordListPreview(darkMode: Boolean) = ExpendaTheme(darkMode) {
-    LazyColumn {
+fun RecordListPreview() {
+    LazyColumn(Modifier.background(LocalExpendaColors.current.surfaceContainer)) {
         itemsIndexed(listOf(
             "Food",
             "Home",
@@ -139,7 +227,10 @@ fun RecordListPreview(darkMode: Boolean) = ExpendaTheme(darkMode) {
 }
 @Preview
 @Composable
-fun RecordListPreviewDark() = RecordListPreview(true)
+fun OverviewPreview() = ExpendaTheme { Overview() }
 @Preview
 @Composable
-fun RecordListPreviewLight() = RecordListPreview(false)
+fun RecordListPreviewPreview() = ExpendaTheme { RecordListPreview() }
+//@Preview
+//@Composable
+//fun RecordListPreviewDark() = ExpendaTheme { Overview() }

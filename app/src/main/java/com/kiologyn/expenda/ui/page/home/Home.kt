@@ -1,6 +1,5 @@
 package com.kiologyn.expenda.ui.page.home
 
-import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import kotlinx.coroutines.launch
 
 
@@ -71,6 +71,6 @@ fun Home() {
 }
 
 
+@Preview
 @Composable
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun HomePreview() = Home()
+fun HomePreview() = ExpendaTheme { Home() }

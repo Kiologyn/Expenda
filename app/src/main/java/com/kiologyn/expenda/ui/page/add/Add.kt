@@ -142,9 +142,11 @@ fun Add() {
                     db.recordDao().insert(record)
 
                 }.invokeOnCompletion {
-                    pageIndexState.intValue = 0
-                    navController.popBackStack()
-                    navController.navigate("Home")
+                    CoroutineScope(Dispatchers.Main).launch {
+                        pageIndexState.intValue = 0
+                        navController.popBackStack()
+                        navController.navigate("Home")
+                    }
                 }
             }
         ) {

@@ -24,6 +24,11 @@ interface RecordDao {
         ORDER BY datetime DESC
     """)
     suspend fun getAllWithSubcategoryNamesDESC(): List<RecordWithSubcategoryName>
+    @Query("""
+        SELECT SUM(record.amount)
+        FROM record
+    """)
+    suspend fun getBalance(): Int
 }
 
 data class RecordWithSubcategoryName(
