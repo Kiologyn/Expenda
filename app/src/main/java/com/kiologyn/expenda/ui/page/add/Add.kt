@@ -29,6 +29,8 @@ import com.kiologyn.expenda.database.table.record.Record
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
 import com.kiologyn.expenda.toMilliseconds
+import com.kiologyn.expenda.ui.localNavController
+import com.kiologyn.expenda.ui.localPageIndexState
 import com.kiologyn.expenda.ui.page.add.component.AmountInput
 import com.kiologyn.expenda.ui.page.add.component.ArrowButton
 import com.kiologyn.expenda.ui.page.add.component.DateTimePicker
@@ -111,6 +113,8 @@ fun Add() {
         }
 
         val localContext = LocalContext.current
+        val pageIndexState = localPageIndexState.current!!
+        val navController = localNavController.current!!
         Button(
             modifier = Modifier
                 .fillMaxWidth()
@@ -136,6 +140,11 @@ fun Add() {
                     ).build()
 
                     db.recordDao().insert(record)
+
+                }.invokeOnCompletion {
+                    pageIndexState.intValue = 0
+                    navController.popBackStack()
+                    navController.navigate("Home")
                 }
             }
         ) {

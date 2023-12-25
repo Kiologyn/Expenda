@@ -55,9 +55,7 @@ fun CategoryPicker(
                         ).build()
 
                         subcategoryState.value = db.subcategoryDao().getById(subcategoryId!!)
-                        categoryTextState.value =
-                            if (subcategoryState.value == null) null
-                            else subcategoryState.value!!.name
+                        categoryTextState.value = subcategoryState.value?.name
                     }
                 }
             }

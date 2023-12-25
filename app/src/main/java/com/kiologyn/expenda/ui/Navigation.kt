@@ -14,12 +14,15 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -27,6 +30,9 @@ import com.kiologyn.expenda.ui.page.add.Add
 import com.kiologyn.expenda.ui.page.home.Home
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 
+
+val localPageIndexState = compositionLocalOf<MutableIntState?> { null }
+val localNavController = compositionLocalOf<NavHostController?> { null }
 
 private data class PageItem (
     val name: String,
@@ -74,7 +80,8 @@ const val START_PAGE_INDEX = 1
 
 @Composable
 fun Navigation() {
-    var navController = rememberNavController()
+    val navController = rememberNavController()
+    val rememberedPageIndexState = remember { mutableIntStateOf(START_PAGE_INDEX) }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
 
@@ -84,20 +91,26 @@ fun Navigation() {
                 navController = navController,
                 startDestination = pages[START_PAGE_INDEX].name,
             ) {
-                for (page in pages) composable(page.name) { (page.page)() }
+                for (page in pages) composable(page.name) {
+                    CompositionLocalProvider(
+                        localNavController provides navController,
+                        localPageIndexState provides rememberedPageIndexState,
+                    ) {
+                        page.page()
+                    }
+                }
             }
         },
         bottomBar = {
-            var rememberedPageIndexState by remember { mutableIntStateOf(START_PAGE_INDEX) }
             NavigationBar {
                 pages.forEachIndexed { index, page ->
                     NavigationBarItem(
                         icon = page.icon,
                         label = { if (page.name != "Add") Text(page.name) },
-                        selected = rememberedPageIndexState == index,
+                        selected = rememberedPageIndexState.intValue == index,
                         onClick = {
-                            if (rememberedPageIndexState != index) {
-                                rememberedPageIndexState = index
+                            if (rememberedPageIndexState.intValue != index) {
+                                rememberedPageIndexState.intValue = index
                                 navController.popBackStack()
                                 navController.navigate(page.name)
                             }
