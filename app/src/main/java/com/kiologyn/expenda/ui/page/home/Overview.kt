@@ -13,8 +13,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -26,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +48,7 @@ import com.kiologyn.expenda.database.table.record.RecordWithSubcategoryName
 import com.kiologyn.expenda.toLocalDateTime
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.ui.theme.LocalExpendaColors
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import kotlin.math.abs
@@ -104,6 +110,7 @@ fun BalanceView(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecordList(
     modifier: Modifier = Modifier,
@@ -111,7 +118,11 @@ fun RecordList(
     var recordsList by remember { mutableStateOf<List<RecordWithSubcategoryName>>(emptyList()) }
 
     val localContext = LocalContext.current
-    LaunchedEffect(true) {
+    val refreshScope = rememberCoroutineScope()
+    var refreshing by remember { mutableStateOf(false) }
+    fun refresh() = refreshScope.launch {
+        refreshing = true
+
         val db = Room.databaseBuilder(
             localContext,
             ExpendaDatabase::class.java,
@@ -119,6 +130,11 @@ fun RecordList(
         ).build()
 
         recordsList = db.recordDao().getAllWithSubcategoryNamesDESC()
+
+        refreshing = false
+    }
+    LaunchedEffect(true) {
+        refresh()
     }
 
     Column(
@@ -148,14 +164,22 @@ fun RecordList(
             )
         }
 
-        LazyColumn {
-            items(recordsList) { record: RecordWithSubcategoryName ->
-                RecordCard(
-                    category = record.subcategoryName,
-                    amount = record.amount,
-                    datetime = record.datetime.toLocalDateTime(),
-                )
+
+        val pullRefreshState = rememberPullRefreshState(refreshing, ::refresh)
+
+        Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+            LazyColumn(Modifier.fillMaxSize()) {
+                if (!refreshing) {
+                    items(recordsList) { record: RecordWithSubcategoryName ->
+                        RecordCard(
+                            category = record.subcategoryName,
+                            amount = record.amount,
+                            datetime = record.datetime.toLocalDateTime(),
+                        )
+                    }
+                }
             }
+            PullRefreshIndicator(refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
         }
     }
 
