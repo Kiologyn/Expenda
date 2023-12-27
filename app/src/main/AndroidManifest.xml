@@ -27,12 +27,17 @@
         </activity>
 
         <activity
-            android:name=".ui.page.add.component.categorypicker.CategorySelectorActivity"
+            android:name=".ui.navigation.page.home.add.component.categorypicker.CategorySelectorActivity"
             android:theme="@style/Theme.Expenda">
         </activity>
 
         <activity
-            android:name=".ui.page.add.component.categorypicker.SubcategorySelectorActivity"
+            android:name=".ui.navigation.page.home.add.component.categorypicker.SubcategorySelectorActivity"
+            android:theme="@style/Theme.Expenda">
+        </activity>
+
+        <activity
+            android:name=".ui.navigation.page.home.add.AddActivity"
             android:theme="@style/Theme.Expenda">
         </activity>
     </application>

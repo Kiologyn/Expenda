@@ -28,7 +28,7 @@ interface RecordDao {
         SELECT SUM(record.amount)
         FROM record
     """)
-    suspend fun getBalance(): Int
+    suspend fun getBalance(): Double
 }
 
 data class RecordWithSubcategoryName(

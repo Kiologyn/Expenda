@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.ui.page.add.component
+package com.kiologyn.expenda.ui.navigation.page.home.add.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -73,7 +73,7 @@ fun ArrowButton(
             colorFilter = ColorFilter.tint(
                 if (isArrowUp.value) LocalExpendaColors.current.arrowGreen
                 else LocalExpendaColors.current.arrowRed
-            )
+            ),
         )
 
         Box(
@@ -91,7 +91,7 @@ fun ArrowButton(
                     .padding(size * ARROWS_PADDING)
                 ,
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(LocalExpendaColors.current.arrowsGray)
+                colorFilter = ColorFilter.tint(LocalExpendaColors.current.arrowsGray),
             )
         }
     }

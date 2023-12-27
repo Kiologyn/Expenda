@@ -12,6 +12,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 
 
@@ -20,6 +21,7 @@ data class ExpendaColors(
     val onSurfaceRed: Color = Color.Unspecified,
     val onSurfaceGreen: Color = Color.Unspecified,
     val surfaceContainer: Color = Color.Unspecified,
+    val surfaceContainerVariant: Color = Color.Unspecified,
     val arrowRed: Color = Color.Unspecified,
     val arrowGreen: Color = Color.Unspecified,
     val arrowsGray: Color = Color.Unspecified,
@@ -68,6 +70,7 @@ private val DarkColors = ExpendaColors(
     onSurfaceRed = Color(0xFFE62D2D),
     onSurfaceGreen = Color(0xFF11D111),
     surfaceContainer = Color(0xFF1E1E1E),
+    surfaceContainerVariant = Color(0xFFE4E4E4),
     arrowRed = Color(0xFFDB2727),
     arrowGreen = Color(0xFF35AC35),
     arrowsGray = Color(0xFF888888),
@@ -109,6 +112,7 @@ private val LightColors = ExpendaColors(
     onSurfaceRed = Color(0xFFFF0000),
     onSurfaceGreen = Color(0xFF00CF00),
     surfaceContainer = Color(0xFF303030),
+    surfaceContainerVariant = Color(0xFFFFFFFF),
     arrowRed = Color(0xFFAF3030),
     arrowGreen = Color(0xFF35AC35),
     arrowsGray = Color(0xFF777777),
@@ -132,7 +136,7 @@ fun ExpendaTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }

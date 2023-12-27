@@ -1,5 +1,16 @@
-package com.kiologyn.expenda.ui.page.home
+package com.kiologyn.expenda.ui.navigation.page.home
 
+import android.content.Intent
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.FloatAnimationSpec
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,21 +19,28 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,20 +52,30 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.withSave
 import androidx.room.Room
 import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.RecordWithSubcategoryName
 import com.kiologyn.expenda.toLocalDateTime
+import com.kiologyn.expenda.ui.navigation.page.home.add.AddActivity
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.ui.theme.LocalExpendaColors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -55,23 +83,43 @@ import kotlin.math.abs
 
 
 @Composable
-fun Overview() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        BalanceView()
-        RecordList(modifier = Modifier.weight(1f))
-    }
+fun Home() {
+    val localContext = LocalContext.current
+    Scaffold(
+        content = { padding -> padding
+            Column(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                BalanceView()
+                RecordList(modifier = Modifier.weight(1f))
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                modifier = Modifier.padding(10.dp),
+                containerColor = LocalExpendaColors.current.surfaceContainerVariant,
+                contentColor = LocalExpendaColors.current.surfaceContainer,
+                onClick = {
+                    localContext.startActivity(Intent(localContext, AddActivity::class.java))
+                },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add",
+                )
+            }
+        },
+    )
 }
 
 @Composable
 fun BalanceView(
     modifier: Modifier = Modifier,
 ) {
-    var balanceValue by remember { mutableStateOf<Int?>(null) }
+    var balanceValue by remember { mutableStateOf<Double?>(null) }
 
     val localContext = LocalContext.current
-    LaunchedEffect(true) {
+    LaunchedEffect(balanceValue == null) {
         val db = Room.databaseBuilder(
             localContext,
             ExpendaDatabase::class.java,
@@ -84,28 +132,23 @@ fun BalanceView(
     Surface {
         Column(
             modifier = modifier
-                .background(MaterialTheme.colorScheme.background)
                 .fillMaxWidth()
-                .shadow(0.dp, RoundedCornerShape(30.dp))
-                .padding(50.dp, 20.dp)
+                .padding(vertical = 30.dp)
             ,
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(5.dp),
         ) {
-            Text(text = "Total balance", color = LocalExpendaColors.current.grayText)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        MaterialTheme.colorScheme.background,
-                        shape = RoundedCornerShape(15.dp)
-                    )
-                    .padding(40.dp, 5.dp)
-                ,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                Text(balanceValue?.toString() ?: "???", fontSize = 30.sp)
-            }
+            Text(
+                text = "Total balance",
+                color = LocalExpendaColors.current.grayText,
+            )
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = balanceValue?.toString() ?: "•••",
+                textAlign = TextAlign.Center,
+                fontSize = 30.sp,
+            )
         }
     }
 }
@@ -123,13 +166,15 @@ fun RecordList(
     fun refresh() = refreshScope.launch {
         refreshing = true
 
-        val db = Room.databaseBuilder(
-            localContext,
-            ExpendaDatabase::class.java,
-            Helper.DATABASE_NAME,
-        ).build()
+        CoroutineScope(Dispatchers.IO).launch {
+            val db = Room.databaseBuilder(
+                localContext,
+                ExpendaDatabase::class.java,
+                Helper.DATABASE_NAME,
+            ).build()
 
-        recordsList = db.recordDao().getAllWithSubcategoryNamesDESC()
+            recordsList = db.recordDao().getAllWithSubcategoryNamesDESC()
+        }
 
         refreshing = false
     }
@@ -137,20 +182,20 @@ fun RecordList(
         refresh()
     }
 
+    val ICON_SIZE = 35.dp
+    val elementShape = RoundedCornerShape(ICON_SIZE, ICON_SIZE, 0.dp, 0.dp)
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(
-                LocalExpendaColors.current.surfaceContainer,
-                shape = RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp)
-            )
+            .clip(elementShape)
+            .background(LocalExpendaColors.current.surfaceContainer)
         ,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.15f)
-                .padding(top = 10.dp)
+                .fillMaxWidth()
+                .height(ICON_SIZE)
                 .clickable {
                     // TODO: open activity with all records
                 }
@@ -158,6 +203,7 @@ fun RecordList(
             contentAlignment = Alignment.Center,
         ) {
             Icon(
+                modifier = Modifier.size(ICON_SIZE*0.8f),
                 imageVector = Icons.Default.List,
                 contentDescription = "recordsList",
                 tint = LocalExpendaColors.current.grayText,
@@ -251,7 +297,7 @@ fun RecordListPreview() {
 }
 @Preview
 @Composable
-fun OverviewPreview() = ExpendaTheme { Overview() }
+private fun Preview() = ExpendaTheme { Home() }
 @Preview
 @Composable
 fun RecordListPreviewPreview() = ExpendaTheme { RecordListPreview() }

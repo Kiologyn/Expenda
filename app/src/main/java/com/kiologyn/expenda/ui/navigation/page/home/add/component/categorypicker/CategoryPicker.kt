@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.ui.page.add.component.categorypicker
+package com.kiologyn.expenda.ui.navigation.page.home.add.component.categorypicker
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
@@ -22,9 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.room.Room
 import com.kiologyn.expenda.Helper
-import com.kiologyn.expenda.LocalActivityResultRegistry
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
+import com.kiologyn.expenda.ui.navigation.page.home.add.LocalActivityResultRegistry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

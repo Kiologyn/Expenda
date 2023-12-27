@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.ui.page.add.component.categorypicker
+package com.kiologyn.expenda.ui.navigation.page.home.add.component.categorypicker
 
 import android.app.Activity
 import android.content.Intent
@@ -105,7 +105,8 @@ class CategorySelectorActivity : ComponentActivity() {
                                                 ActivityResultContracts.StartActivityForResult(),
                                             ) { result ->
                                                 if (result.resultCode == RESULT_OK) {
-                                                    val subcategoryId = result.data?.getIntExtra(SubcategorySelectorActivity.SELECTED_ID_EXTRA_NAME, -1)
+                                                    val subcategoryId = result.data?.getIntExtra(
+                                                        SubcategorySelectorActivity.SELECTED_ID_EXTRA_NAME, -1)
                                                     if (subcategoryId !in listOf(null, -1)) {
                                                         val resultIntent = Intent()
                                                         resultIntent.putExtra(SELECTED_ID_EXTRA_NAME, subcategoryId)

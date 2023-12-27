@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.ui.page.add.component
+package com.kiologyn.expenda.ui.navigation.page.home.add.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
