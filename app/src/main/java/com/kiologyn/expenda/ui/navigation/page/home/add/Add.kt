@@ -96,7 +96,7 @@ class AddActivity : ComponentActivity() {
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        containerColor = MaterialTheme.colorScheme.background,
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     )
                 )
@@ -112,7 +112,7 @@ class AddActivity : ComponentActivity() {
                     ) {
                         val LINE_HEIGHT = 50.dp
                         val ELEMENTS_BACKGROUND = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp)
-                        val BORDER_RADIUS = 15.dp
+                        val SHAPE = RoundedCornerShape(15.dp)
 
                         val dateTimeState = remember { mutableStateOf(LocalDateTime.now()) }
                         val isIncomeState = remember { mutableStateOf(false) }
@@ -129,7 +129,8 @@ class AddActivity : ComponentActivity() {
                             DateTimePicker(
                                 modifier = Modifier
                                     .height(LINE_HEIGHT)
-                                    .background(ELEMENTS_BACKGROUND, RoundedCornerShape(BORDER_RADIUS))
+                                    .background(ELEMENTS_BACKGROUND, SHAPE)
+                                    .clip(SHAPE)
                                 ,
                                 dateTimeState = dateTimeState,
                             )
@@ -140,8 +141,8 @@ class AddActivity : ComponentActivity() {
                             ) {
                                 ArrowButton(
                                     modifier = Modifier
-                                        .background(ELEMENTS_BACKGROUND, RoundedCornerShape(BORDER_RADIUS))
-                                        .clip(RoundedCornerShape(BORDER_RADIUS))
+                                        .background(ELEMENTS_BACKGROUND, SHAPE)
+                                        .clip(SHAPE)
                                     ,
                                     size = LINE_HEIGHT,
                                     isArrowUp = isIncomeState,
@@ -158,7 +159,8 @@ class AddActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(LINE_HEIGHT)
-                                    .background(ELEMENTS_BACKGROUND, RoundedCornerShape(BORDER_RADIUS))
+                                    .background(ELEMENTS_BACKGROUND, SHAPE)
+                                    .clip(SHAPE)
                                 ,
                                 subcategoryState,
                             )
@@ -167,7 +169,7 @@ class AddActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(LINE_HEIGHT * 3)
-                                    .background(ELEMENTS_BACKGROUND, RoundedCornerShape(BORDER_RADIUS))
+                                    .background(ELEMENTS_BACKGROUND, SHAPE)
                                 ,
                                 descriptionState,
                             )
