@@ -25,7 +25,7 @@ interface RecordDao {
     """)
     suspend fun getAllWithSubcategoryNamesDESC(): List<RecordWithSubcategoryName>
     @Query("""
-        SELECT SUM(record.amount)
+        SELECT COALESCE(SUM(record.amount), 0)
         FROM record
     """)
     suspend fun getBalance(): Double

@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kiologyn.expenda.ui.navigation.page.Statistics
+import com.kiologyn.expenda.ui.navigation.page.statistics.Statistics
 import com.kiologyn.expenda.ui.navigation.page.home.Home
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 

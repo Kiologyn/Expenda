@@ -19,12 +19,19 @@ import androidx.core.view.WindowCompat
 data class ExpendaColors(
     val onSurfaceRed: Color = Color.Unspecified,
     val onSurfaceGreen: Color = Color.Unspecified,
+
     val surfaceContainer: Color = Color.Unspecified,
     val surfaceContainerVariant: Color = Color.Unspecified,
+    
     val arrowRed: Color = Color.Unspecified,
     val arrowGreen: Color = Color.Unspecified,
     val arrowsGray: Color = Color.Unspecified,
     val grayText: Color = Color.Unspecified,
+
+    val periodPicker: Color = Color.Unspecified,
+    val dateRangePickerStroke: Color = Color.Unspecified,
+    val dotIndicatorSelected: Color = Color.Unspecified,
+    val dotIndicatorUnselected: Color = Color.Unspecified,
 )
 val LocalExpendaColors = staticCompositionLocalOf { ExpendaColors() }
 
@@ -70,10 +77,16 @@ private val DarkColors = ExpendaColors(
     onSurfaceGreen = Color(0xFF11D111),
     surfaceContainer = Color(0xFF1E1E1E),
     surfaceContainerVariant = Color(0xFFE4E4E4),
+
     arrowRed = Color(0xFFDB2727),
     arrowGreen = Color(0xFF35AC35),
     arrowsGray = Color(0xFF888888),
     grayText = Color(0xFF666666),
+
+    periodPicker = Color(0xFF262626),
+    dateRangePickerStroke = Color(0xFFAAAAAA),
+    dotIndicatorSelected = Color(0xFFC4C4C4),
+    dotIndicatorUnselected = Color(0xFF4D4D4D),
 )
 
 private val LightColorScheme = lightColorScheme(
