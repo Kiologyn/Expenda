@@ -76,7 +76,7 @@ fun TimePickerElement(
         initialMinute = dateTimeState.value.minute,
     )
     val timePickerText = remember { mutableStateOf(
-        dateTimeState.value.format(Helper.timeFormatter)
+        dateTimeState.value.formatTime()
     ) }
     PickerContainer(
         modifier = modifier,

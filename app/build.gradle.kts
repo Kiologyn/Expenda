@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.kiologyn.expenda"
-        minSdk = 26
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -42,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.7"
     }
     packaging {
         resources {
@@ -69,13 +69,14 @@ dependencies {
     debugImplementation(libs.ui.test.manifest)
 
     // Navigation Bar
-    implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation(libs.navigation.compose)
 
     // Storage Room
-    val roomVersion = "2.6.1"
-    implementation("androidx.room:room-ktx:$roomVersion")
-    implementation("androidx.room:room-runtime:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
+    kapt(libs.room.compiler)
 
     implementation(libs.material)
+
+    implementation(libs.mpandroidchart)
 }

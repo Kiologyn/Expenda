@@ -50,6 +50,7 @@ import androidx.room.Room
 import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.RecordWithSubcategoryName
+import com.kiologyn.expenda.formatDateTime
 import com.kiologyn.expenda.toLocalDateTime
 import com.kiologyn.expenda.ui.navigation.page.home.add.AddActivity
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
@@ -244,7 +245,7 @@ fun RecordCard(
                     fontSize = 15.sp,
                 )
                 Text(
-                    datetime.format(Helper.datetimeFormatter),
+                    datetime.formatDateTime(),
                     color = LocalExpendaColors.current.grayText,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Normal,

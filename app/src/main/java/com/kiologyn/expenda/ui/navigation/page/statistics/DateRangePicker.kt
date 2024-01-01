@@ -67,7 +67,6 @@ import com.kiologyn.expenda.ui.theme.LocalExpendaColors
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 
@@ -97,8 +96,10 @@ fun DatePeriodSelectorContainer(
         ),
     )
 
-    LaunchedEffect(pagerState.settledPage) {
+    LaunchedEffect(pagerState.currentPage) {
         selectedPageIndex = pagerState.currentPage
+    }
+    LaunchedEffect(pagerState.settledPage) {
         fromDate.value = datePeriodsStates[pagerState.currentPage]["from"]!!.value
         toDate.value = datePeriodsStates[pagerState.currentPage]["to"]!!.value
     }
@@ -416,7 +417,7 @@ fun DotsIndicator(
     size: Dp,
 ){
     LazyRow(
-        modifier = Modifier
+        modifier = modifier
             .wrapContentWidth()
             .wrapContentHeight()
         ,

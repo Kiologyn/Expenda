@@ -7,6 +7,11 @@ import androidx.room.Query
 @Dao
 interface SubcategoryDao {
     @Query("""
+        SELECT *
+        FROM subcategory
+    """)
+    suspend fun getAll(): List<Subcategory>
+    @Query("""
         INSERT INTO subcategory (name, idCategory)
         SELECT :newSubcategoryName, category.id
         FROM category

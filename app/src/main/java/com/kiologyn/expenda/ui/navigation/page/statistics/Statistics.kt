@@ -10,15 +10,18 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kiologyn.expenda.ui.navigation.page.statistics.component.balancetrend.BalanceTrendStatistic
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.ui.theme.LocalExpendaColors
 import java.time.LocalDateTime
@@ -36,10 +39,10 @@ fun Statistics() {
             .background(MaterialTheme.colorScheme.background)
         ,
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            BalanceTrendStatistic()
-            CategoriesSpendingStatistic()
-            CashFlowStatistic()
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            item { BalanceTrendStatistic(fromDate, toDate) }
+            item { CategoriesSpendingStatistic(fromDate, toDate) }
+            item { CashFlowStatistic(fromDate, toDate) }
         }
 
         DatePeriodSelectorContainer(fromDate, toDate)
@@ -47,19 +50,19 @@ fun Statistics() {
 }
 
 @Composable
-fun BalanceTrendStatistic() {
-    StatisticContainer(title = "Balance trend") {
-
-    }
-}
-@Composable
-fun CategoriesSpendingStatistic() {
+fun CategoriesSpendingStatistic(
+    fromDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now().minusWeeks(1)) },
+    toDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now()) },
+) {
     StatisticContainer(title = "Spending by categories") {
 
     }
 }
 @Composable
-fun CashFlowStatistic() {
+fun CashFlowStatistic(
+    fromDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now().minusWeeks(1)) },
+    toDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now()) },
+) {
     StatisticContainer(title = "Cash flow") {
 
     }
