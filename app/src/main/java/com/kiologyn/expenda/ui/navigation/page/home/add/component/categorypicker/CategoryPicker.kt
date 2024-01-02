@@ -29,8 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.room.Room
-import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
 import com.kiologyn.expenda.ui.navigation.page.home.add.LocalActivityResultRegistry
@@ -60,12 +58,7 @@ fun CategoryPicker(
                 )
                 if (subcategoryId !in listOf(null, -1)) {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val db = Room.databaseBuilder(
-                            localContext,
-                            ExpendaDatabase::class.java,
-                            Helper.DATABASE_NAME,
-                        ).build()
-
+                        val db = ExpendaDatabase.build(localContext)
                         subcategoryState.value = db.subcategoryDao().getById(subcategoryId!!)
                         categoryText = subcategoryState.value?.name
                     }

@@ -3,7 +3,6 @@ package com.kiologyn.expenda
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.room.Room
 import com.kiologyn.expenda.database.ExpendaDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,12 +50,7 @@ class ExpendaApp : Application() {
 
         if (!isDefaultCategoriesAdded())
             CoroutineScope(Dispatchers.IO).launch {
-                val db = Room.databaseBuilder(
-                    applicationContext,
-                    ExpendaDatabase::class.java,
-                    Helper.DATABASE_NAME,
-                ).build()
-
+                val db = ExpendaDatabase.build(applicationContext)
                 val subcategoryDao = db.subcategoryDao()
                 val categoryDao = db.categoryDao()
 

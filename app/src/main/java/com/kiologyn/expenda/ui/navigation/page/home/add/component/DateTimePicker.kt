@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.formatDate
 import com.kiologyn.expenda.formatTime
 import com.kiologyn.expenda.toLocalDateTime
@@ -40,13 +39,11 @@ fun PickerContainer(
     picker: @Composable (MutableState<Boolean>) -> Unit,
     pickerText: MutableState<String>,
 ) {
-    var openDialog = remember { mutableStateOf(false) }
+    val openDialog = remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
-            .clickable(onClick = {
-                openDialog.value = true
-            })
+            .clickable { openDialog.value = true  }
         ,
         contentAlignment = Alignment.Center
     ) {
@@ -75,9 +72,7 @@ fun TimePickerElement(
         initialHour = dateTimeState.value.hour,
         initialMinute = dateTimeState.value.minute,
     )
-    val timePickerText = remember { mutableStateOf(
-        dateTimeState.value.formatTime()
-    ) }
+    val timePickerText = remember { mutableStateOf(dateTimeState.value.formatTime()) }
     PickerContainer(
         modifier = modifier,
         picker = { openDialog ->
@@ -137,8 +132,10 @@ fun DatePickerElement(
                     TextButton(
                         onClick = {
                             openDialog.value = false
-                            dateTimeState.value =
-                                (datePickerState.selectedDateMillis ?: 0).toLocalDateTime()
+                            dateTimeState.value = LocalDateTime.of(
+                                (datePickerState.selectedDateMillis ?: 0).toLocalDateTime().toLocalDate(),
+                                dateTimeState.value.toLocalTime(),
+                            )
                             datePickerText.value = dateTimeState.value.formatDate()
                         },
                     ) {

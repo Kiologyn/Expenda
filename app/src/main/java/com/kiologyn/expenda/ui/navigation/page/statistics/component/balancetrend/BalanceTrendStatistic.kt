@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.room.Room
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -23,7 +22,6 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.DailyBalanceRecord
 import com.kiologyn.expenda.formatDateMY
@@ -48,12 +46,7 @@ fun BalanceTrendStatistic(
 
         val localContext = LocalContext.current
         LaunchedEffect(fromDate.value, toDate.value) {
-            val db = Room.databaseBuilder(
-                localContext,
-                ExpendaDatabase::class.java,
-                Helper.DATABASE_NAME,
-            ).build()
-
+            val db = ExpendaDatabase.build(localContext)
             points = db.recordDao().dailyBalanceRecordPerPeriod(
                 fromDate.value.toMilliseconds(),
                 toDate.value.toMilliseconds(),

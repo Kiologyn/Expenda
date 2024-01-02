@@ -46,8 +46,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.Room
-import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.RecordWithSubcategoryName
 import com.kiologyn.expenda.formatDateTime
@@ -67,9 +65,12 @@ import kotlin.math.abs
 fun Home() {
     val localContext = LocalContext.current
     Scaffold(
-        content = { padding -> padding
+        content = { padding ->
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                ,
             ) {
                 BalanceView()
                 RecordList(modifier = Modifier.weight(1f))
@@ -101,12 +102,7 @@ fun BalanceView(
 
     val localContext = LocalContext.current
     LaunchedEffect(balanceValue == null) {
-        val db = Room.databaseBuilder(
-            localContext,
-            ExpendaDatabase::class.java,
-            Helper.DATABASE_NAME,
-        ).build()
-
+        val db = ExpendaDatabase.build(localContext)
         balanceValue = db.recordDao().getBalance()
     }
 
@@ -148,12 +144,7 @@ fun RecordList(
         refreshing = true
 
         CoroutineScope(Dispatchers.IO).launch {
-            val db = Room.databaseBuilder(
-                localContext,
-                ExpendaDatabase::class.java,
-                Helper.DATABASE_NAME,
-            ).build()
-
+            val db = ExpendaDatabase.build(localContext)
             recordsList = db.recordDao().getAllWithSubcategoryNamesDESC()
         }
 

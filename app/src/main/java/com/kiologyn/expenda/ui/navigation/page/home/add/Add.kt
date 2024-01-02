@@ -33,13 +33,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.Room
-import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.Record
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
@@ -175,7 +172,6 @@ class AddActivity : ComponentActivity() {
                             )
                         }
 
-                        val localContext = LocalContext.current
                         Button(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -194,12 +190,7 @@ class AddActivity : ComponentActivity() {
                                     idSubcategory = subcategoryState.value!!.id
                                 )
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    val db = Room.databaseBuilder(
-                                        localContext,
-                                        ExpendaDatabase::class.java,
-                                        Helper.DATABASE_NAME,
-                                    ).build()
-
+                                    val db = ExpendaDatabase.build(applicationContext)
                                     db.recordDao().insert(record)
 
                                 }.invokeOnCompletion {

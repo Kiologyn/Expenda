@@ -31,8 +31,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.room.Room
-import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.category.Category
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
@@ -52,12 +50,7 @@ class CategorySelectorActivity : ComponentActivity() {
                 var categories by remember { mutableStateOf<List<Category>>(emptyList()) }
 
                 LaunchedEffect(true) {
-                    val db = Room.databaseBuilder(
-                        applicationContext,
-                        ExpendaDatabase::class.java,
-                        Helper.DATABASE_NAME,
-                    ).build()
-
+                    val db = ExpendaDatabase.build(applicationContext)
                     categories = db.categoryDao().getAll()
                 }
 
@@ -145,12 +138,7 @@ class SubcategorySelectorActivity : ComponentActivity() {
                 var subcategories by remember { mutableStateOf<List<Subcategory>>(emptyList()) }
 
                 LaunchedEffect(true) {
-                    val db = Room.databaseBuilder(
-                        applicationContext,
-                        ExpendaDatabase::class.java,
-                        Helper.DATABASE_NAME,
-                    ).build()
-
+                    val db = ExpendaDatabase.build(applicationContext)
                     val categoryId = intent.getIntExtra(RECEIVED_ID_EXTRA_NAME, -1)
                     if (categoryId != -1)
                         subcategories = db.subcategoryDao().getAllByCategoryId(categoryId)
