@@ -16,9 +16,9 @@ class Helper {
 
         const val DATETIME_FORMAT: String = "$TIME_FORMAT $DATE_FORMAT"
 
-        const val DATABASE_NAME = "database"
-
         const val SHARED_PREFERENCES_SETTINGS_NAME = "settings"
+
+        const val ROUND_DECIMAL_PLACES = 2
     }
 }
 

@@ -26,11 +26,12 @@ abstract class ExpendaDatabase : RoomDatabase() {
     abstract fun subcategoryDao(): SubcategoryDao
     abstract fun categoryDao(): CategoryDao
     companion object {
+        const val DATABASE_NAME = "database"
         fun build(context: Context): ExpendaDatabase {
             return Room.databaseBuilder(
                 context,
                 ExpendaDatabase::class.java,
-                Helper.DATABASE_NAME,
+                DATABASE_NAME,
             ).build()
         }
     }

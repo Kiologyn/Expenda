@@ -47,11 +47,53 @@ interface RecordDao {
         LEFT JOIN balanceBefore
     """)
     suspend fun dailyBalanceRecordPerPeriod(fromDate: Long, toDate: Long): List<DailyBalanceRecord>
+    @Query("""
+        SELECT
+            category.name as name,
+            -SUM(record.amount) as amount
+        FROM record
+        JOIN subcategory ON record.idSubcategory = subcategory.id
+        JOIN category ON subcategory.idCategory = category.id
+        WHERE DATE(record.datetime/1000, 'unixepoch') BETWEEN DATE(:fromDate/1000, 'unixepoch') AND DATE(:toDate/1000, 'unixepoch')
+        AND record.amount < 0
+        GROUP BY category.id
+    """)
+    suspend fun categoriesExpenses(fromDate: Long, toDate: Long): List<CategoryExpense>
+    @Query("""
+        SELECT
+            subcategory.name as name,
+            -SUM(record.amount) as amount
+        FROM record
+        JOIN subcategory ON record.idSubcategory = subcategory.id
+        JOIN category ON subcategory.idCategory = category.id
+        WHERE DATE(record.datetime/1000, 'unixepoch') BETWEEN DATE(:fromDate/1000, 'unixepoch') AND DATE(:toDate/1000, 'unixepoch')
+        AND record.amount < 0
+        GROUP BY subcategory.id
+    """)
+    suspend fun subcategoriesExpenses(fromDate: Long, toDate: Long): List<CategoryExpense>
+    @Query("""
+        SELECT
+            subcategory.name as name,
+            -SUM(record.amount) as amount
+        FROM record
+        JOIN subcategory ON record.idSubcategory = subcategory.id
+        JOIN category ON subcategory.idCategory = category.id
+        WHERE DATE(record.datetime/1000, 'unixepoch') BETWEEN DATE(:fromDate/1000, 'unixepoch') AND DATE(:toDate/1000, 'unixepoch')
+        AND record.amount < 0
+        AND category.name = :categoryName
+        GROUP BY subcategory.id
+    """)
+    suspend fun subcategoriesExpensesByCategory(fromDate: Long, toDate: Long, categoryName: String): List<CategoryExpense>
 }
 
 data class DailyBalanceRecord(
     val date: Long,
     val balance: Double,
+)
+
+data class CategoryExpense(
+    val name: String,
+    val amount: Double,
 )
 
 data class RecordWithSubcategoryName(

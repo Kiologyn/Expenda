@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.ui.theme.Black40
 
 
@@ -31,7 +32,11 @@ fun AmountInput(
         onValueChange = { value ->
             if (!value.contains(" ")) {
                 val doubleValue = value.toDoubleOrNull()
-                if (value == "" || doubleValue != null) {
+                if (
+                    (value == "" || doubleValue != null)
+                    && text.substringAfter('.', ".".repeat(Helper.ROUND_DECIMAL_PLACES))
+                        .length <= Helper.ROUND_DECIMAL_PLACES
+                ) {
                     text = value
                     amountState.value = doubleValue
                 }

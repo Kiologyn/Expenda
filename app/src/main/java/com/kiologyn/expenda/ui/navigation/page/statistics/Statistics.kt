@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kiologyn.expenda.ui.navigation.page.statistics.component.balancetrend.BalanceTrendStatistic
+import com.kiologyn.expenda.ui.navigation.page.statistics.component.categoryspending.CategorySpendingStatistic
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.ui.theme.LocalExpendaColors
 import java.time.LocalDateTime
@@ -41,7 +42,7 @@ fun Statistics() {
     ) {
         LazyColumn(modifier = Modifier.weight(1f)) {
             item { BalanceTrendStatistic(fromDate, toDate) }
-            item { CategoriesSpendingStatistic(fromDate, toDate) }
+            item { CategorySpendingStatistic(fromDate, toDate) }
             item { CashFlowStatistic(fromDate, toDate) }
         }
 
@@ -49,15 +50,6 @@ fun Statistics() {
     }
 }
 
-@Composable
-fun CategoriesSpendingStatistic(
-    fromDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now().minusWeeks(1)) },
-    toDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now()) },
-) {
-    StatisticContainer(title = "Spending by categories") {
-
-    }
-}
 @Composable
 fun CashFlowStatistic(
     fromDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now().minusWeeks(1)) },

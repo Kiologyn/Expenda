@@ -37,7 +37,7 @@ fun BalanceTrendStatistic(
     fromDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now().minusWeeks(1)) },
     toDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now()) },
 ) {
-    val ANIMATION_DURATION = 300
+    val ANIMATION_DURATION = 500
 
     StatisticContainer(title = "Balance trend") {
         var points by remember { mutableStateOf(listOf(
@@ -105,14 +105,14 @@ fun BalanceTrendStatistic(
                             valueTextColor = AndroidColor.WHITE
                             valueTextSize = 16f
 
-                            enableDashedHighlightLine(10f, 10f, 0f)
+                            enableDashedHighlightLine(20f, 20f, 0f)
                             highlightLineWidth = 1f
-                            highLightColor = AndroidColor.parseColor("#AAAAAA")
+                            highLightColor = AndroidColor.parseColor("#777777")
                             setDrawHorizontalHighlightIndicator(false)
                         }
                     )
 
-                    animateXY(ANIMATION_DURATION/2, ANIMATION_DURATION)
+                    animateXY(ANIMATION_DURATION, ANIMATION_DURATION)
 
                     invalidate()
                 }
