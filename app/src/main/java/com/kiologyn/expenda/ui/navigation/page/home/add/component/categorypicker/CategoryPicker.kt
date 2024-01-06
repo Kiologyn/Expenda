@@ -1,6 +1,5 @@
 package com.kiologyn.expenda.ui.navigation.page.home.add.component.categorypicker
 
-import android.app.Activity.RESULT_OK
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
@@ -22,7 +21,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +39,7 @@ fun CategoryPicker(
     modifier: Modifier = Modifier,
     subcategoryState: MutableState<Subcategory?> = remember { mutableStateOf(null as Subcategory?) }
 ) {
-    var categoryText by remember { mutableStateOf(subcategoryState.value?.name) }
+    val categoryText by remember(subcategoryState.value) { mutableStateOf(subcategoryState.value?.name) }
 
     val localContext = LocalContext.current
     val activityResultRegistry = LocalActivityResultRegistry.current
@@ -50,19 +48,17 @@ fun CategoryPicker(
             "categoryRegisterKey",
             ActivityResultContracts.StartActivityForResult(),
         ) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val data: Intent? = result.data
-                val subcategoryId = data?.getIntExtra(
-                    CategorySelectorActivity.SELECTED_ID_EXTRA_NAME,
-                    -1
-                )
-                if (subcategoryId !in listOf(null, -1)) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val db = ExpendaDatabase.build(localContext)
-                        subcategoryState.value = db.subcategoryDao().getById(subcategoryId!!)
-                        categoryText = subcategoryState.value?.name
-                    }
-                }
+            val subcategoryId = result.data?.getIntExtra(
+                CategorySelectorActivity.SELECTED_ID_EXTRA_NAME,
+                -1,
+            )
+            CoroutineScope(Dispatchers.IO).launch {
+                subcategoryState.value = ExpendaDatabase
+                    .build(localContext)
+                    .subcategoryDao()
+                    .getById(
+                        subcategoryId ?: subcategoryState.value?.id ?: -1
+                    )
             }
         }
     }

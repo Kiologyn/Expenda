@@ -7,11 +7,6 @@ import androidx.room.Query
 @Dao
 interface SubcategoryDao {
     @Query("""
-        SELECT *
-        FROM subcategory
-    """)
-    suspend fun getAll(): List<Subcategory>
-    @Query("""
         INSERT INTO subcategory (name, idCategory)
         SELECT :newSubcategoryName, category.id
         FROM category
@@ -30,4 +25,16 @@ interface SubcategoryDao {
         WHERE subcategory.id = :id
     """)
     suspend fun getById(id: Int): Subcategory?
+    @Query("""
+        UPDATE subcategory
+        SET name = :newName
+        WHERE name = :oldName
+    """)
+    suspend fun rename(oldName: String, newName: String)
+    @Query("""
+        DELETE
+        FROM subcategory
+        WHERE name = :name
+    """)
+    suspend fun delete(name: String)
 }

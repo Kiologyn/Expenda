@@ -17,8 +17,9 @@ interface RecordDao {
             subcategory.name as subcategoryName
         FROM record JOIN subcategory ON record.idSubcategory = subcategory.id
         ORDER BY datetime DESC
+        LIMIT :quantity OFFSET :offset
     """)
-    suspend fun getAllWithSubcategoryNamesDESC(): List<RecordWithSubcategoryName>
+    suspend fun getAllWithSubcategoryNamesWithOffsetDESC(offset: Int = 0, quantity: Int): List<RecordWithSubcategoryName>
     @Query("""
         SELECT COALESCE(SUM(record.amount), 0)
         FROM record
@@ -59,18 +60,6 @@ interface RecordDao {
         GROUP BY category.id
     """)
     suspend fun categoriesExpenses(fromDate: Long, toDate: Long): List<CategoryExpense>
-    @Query("""
-        SELECT
-            subcategory.name as name,
-            -SUM(record.amount) as amount
-        FROM record
-        JOIN subcategory ON record.idSubcategory = subcategory.id
-        JOIN category ON subcategory.idCategory = category.id
-        WHERE DATE(record.datetime/1000, 'unixepoch') BETWEEN DATE(:fromDate/1000, 'unixepoch') AND DATE(:toDate/1000, 'unixepoch')
-        AND record.amount < 0
-        GROUP BY subcategory.id
-    """)
-    suspend fun subcategoriesExpenses(fromDate: Long, toDate: Long): List<CategoryExpense>
     @Query("""
         SELECT
             subcategory.name as name,

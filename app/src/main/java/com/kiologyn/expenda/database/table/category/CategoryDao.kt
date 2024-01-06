@@ -19,4 +19,16 @@ interface CategoryDao {
         SELECT * FROM category WHERE category.id = :id
     """)
     suspend fun getById(id: Int): Category?
+    @Query("""
+        UPDATE category
+        SET name = :newName
+        WHERE name = :oldName
+    """)
+    suspend fun rename(oldName: String, newName: String)
+    @Query("""
+        DELETE
+        FROM category
+        WHERE name = :name
+    """)
+    suspend fun delete(name: String)
 }

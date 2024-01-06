@@ -102,9 +102,15 @@ fun BalanceView(
     var balanceValue by remember { mutableStateOf<Double?>(null) }
 
     val localContext = LocalContext.current
-    LaunchedEffect(balanceValue == null) {
-        val db = ExpendaDatabase.build(localContext)
-        balanceValue = db.recordDao().getBalance()
+    var refreshBalance by remember { mutableStateOf(true) }
+    LaunchedEffect(refreshBalance) {
+        if (refreshBalance) {
+            balanceValue = ExpendaDatabase
+                .build(localContext)
+                .recordDao()
+                .getBalance()
+            refreshBalance = false
+        }
     }
 
     Surface {
@@ -122,7 +128,10 @@ fun BalanceView(
             )
 
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { refreshBalance = true }
+                ,
                 text = balanceValue?.let{ "%.${Helper.ROUND_DECIMAL_PLACES}f".format(it) } ?: "•••",
                 textAlign = TextAlign.Center,
                 fontSize = 30.sp,
@@ -145,8 +154,13 @@ fun RecordList(
         refreshing = true
 
         CoroutineScope(Dispatchers.IO).launch {
-            val db = ExpendaDatabase.build(localContext)
-            recordsList = db.recordDao().getAllWithSubcategoryNamesDESC()
+            recordsList = ExpendaDatabase
+                .build(localContext)
+                .recordDao()
+                .getAllWithSubcategoryNamesWithOffsetDESC(
+                    offset = 0,
+                    quantity = 10,
+                )
         }
 
         refreshing = false
@@ -156,11 +170,11 @@ fun RecordList(
     }
 
     val ICON_SIZE = 35.dp
-    val elementShape = RoundedCornerShape(ICON_SIZE, ICON_SIZE, 0.dp, 0.dp)
+    val ELEMENT_SHAPE = RoundedCornerShape(ICON_SIZE, ICON_SIZE, 0.dp, 0.dp)
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(elementShape)
+            .clip(ELEMENT_SHAPE)
             .background(LocalExpendaColors.current.surfaceContainer)
         ,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -185,7 +199,6 @@ fun RecordList(
 
 
         val pullRefreshState = rememberPullRefreshState(refreshing, ::refresh)
-
         Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
             LazyColumn(Modifier.fillMaxSize()) {
                 if (!refreshing) {
@@ -206,7 +219,6 @@ fun RecordList(
 
 @Composable
 fun RecordCard(
-//    icon: Painter = painterResource(R.drawable.coin),
     category: String? = null,
     amount: Double = 0.toDouble(),
     datetime: LocalDateTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC),
@@ -214,16 +226,6 @@ fun RecordCard(
 ) {
     ListItem(
         modifier = Modifier.clickable(onClick = onClick),
-//        leadingContent = {
-//            val iconSize = 40.dp
-//            Icon(
-//                icon,
-//                category,
-//                modifier = Modifier
-//                    .width(iconSize)
-//                    .height(iconSize)
-//            )
-//        },
         headlineContent = { Text(category ?: "???") },
         trailingContent = {
             Column(horizontalAlignment = Alignment.End) {

@@ -2,6 +2,7 @@ package com.kiologyn.expenda.database.table.subcategory
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.kiologyn.expenda.database.table.category.Category
 
@@ -15,7 +16,13 @@ import com.kiologyn.expenda.database.table.category.Category
             childColumns = ["idCategory"],
             onDelete = ForeignKey.CASCADE,
         )
-    ]
+    ],
+    indices = [
+        Index(
+            value = ["name"],
+            unique = true,
+        ),
+    ],
 )
 data class Subcategory(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,

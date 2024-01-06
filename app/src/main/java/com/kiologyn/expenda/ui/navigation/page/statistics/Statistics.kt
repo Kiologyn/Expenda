@@ -41,9 +41,13 @@ fun Statistics() {
         ,
     ) {
         LazyColumn(modifier = Modifier.weight(1f)) {
-            item { BalanceTrendStatistic(fromDate, toDate) }
-            item { CategorySpendingStatistic(fromDate, toDate) }
-            item { CashFlowStatistic(fromDate, toDate) }
+            item {
+                Column {
+                    BalanceTrendStatistic(fromDate, toDate)
+                    CategorySpendingStatistic(fromDate, toDate)
+                    CashFlowStatistic(fromDate, toDate)
+                }
+            }
         }
 
         DatePeriodSelectorContainer(fromDate, toDate)

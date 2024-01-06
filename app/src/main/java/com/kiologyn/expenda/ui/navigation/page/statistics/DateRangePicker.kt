@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -83,7 +82,7 @@ fun DatePeriodSelectorContainer(
     val CONTAINER_SHAPE = RoundedCornerShape(CONTAINER_BORDER_RADUIS, CONTAINER_BORDER_RADUIS)
 
     val pagerState = rememberPagerState(initialPage = INITIAL_PAGE_INDEX) { PAGES_COUNT }
-    var selectedPageIndex by remember { mutableIntStateOf(INITIAL_PAGE_INDEX) }
+    val selectedPageIndex by remember(pagerState.currentPage) { mutableIntStateOf(pagerState.currentPage) }
     var selectedTimeUnit by remember { mutableStateOf(DropdownMenuEnum.WEEK) }
     val datePeriodsStates: List<Map<String, MutableState<LocalDateTime>>> = listOf(
         mapOf(
@@ -96,9 +95,6 @@ fun DatePeriodSelectorContainer(
         ),
     )
 
-    LaunchedEffect(pagerState.currentPage) {
-        selectedPageIndex = pagerState.currentPage
-    }
     LaunchedEffect(pagerState.settledPage) {
         fromDate.value = datePeriodsStates[pagerState.currentPage]["from"]!!.value
         toDate.value = datePeriodsStates[pagerState.currentPage]["to"]!!.value
@@ -162,26 +158,24 @@ fun DatePeriodSelectorContainer(
                                 }
                             }
 
-                            var labelText by remember { mutableStateOf("") }
-                            LaunchedEffect(localFromDate, localToDate) {
-                                labelText =
-                                    if (
-                                        localFromDate.toLocalDate().compareTo(
-                                            LocalDate.now().run {
-                                                when (selectedTimeUnit) {
-                                                    DropdownMenuEnum.WEEK -> with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-                                                    DropdownMenuEnum.MONTH -> with(TemporalAdjusters.firstDayOfMonth())
-                                                    DropdownMenuEnum.YEAR -> with(TemporalAdjusters.firstDayOfYear())
-                                                }
+                            val labelText by remember(localFromDate, localToDate) { mutableStateOf(
+                                if (
+                                    localFromDate.toLocalDate().compareTo(
+                                        LocalDate.now().run {
+                                            when (selectedTimeUnit) {
+                                                DropdownMenuEnum.WEEK -> with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                                                DropdownMenuEnum.MONTH -> with(TemporalAdjusters.firstDayOfMonth())
+                                                DropdownMenuEnum.YEAR -> with(TemporalAdjusters.firstDayOfYear())
                                             }
-                                        ) == 0
-                                    ) selectedTimeUnit.display
-                                    else when (selectedTimeUnit) {
-                                        DropdownMenuEnum.WEEK -> "${localFromDate.formatDate()} - ${localToDate.formatDate()}"
-                                        DropdownMenuEnum.MONTH -> "${localFromDate.month.getDisplayName(java.time.format.TextStyle.FULL, Locale.getDefault())} ${localFromDate.year}"
-                                        DropdownMenuEnum.YEAR -> "${localFromDate.year}"
-                                    }
-                            }
+                                        }
+                                    ) == 0
+                                ) selectedTimeUnit.display
+                                else when (selectedTimeUnit) {
+                                    DropdownMenuEnum.WEEK -> "${localFromDate.formatDate()} - ${localToDate.formatDate()}"
+                                    DropdownMenuEnum.MONTH -> "${localFromDate.month.getDisplayName(java.time.format.TextStyle.FULL, Locale.getDefault())} ${localFromDate.year}"
+                                    DropdownMenuEnum.YEAR -> "${localFromDate.year}"
+                                }
+                            ) }
 
                             val shiftDates: (Boolean) -> Unit = { isForward ->
                                 when (selectedTimeUnit) {
@@ -252,7 +246,7 @@ fun DatePeriodSelectorContainer(
                                         expanded = menuOpened,
                                         onDismissRequest = { menuOpened = false },
                                     ) {
-                                        DropdownMenuEnum.values().forEach { item ->
+                                        DropdownMenuEnum.entries.forEach { item ->
                                             DropdownMenuItem(
                                                 text = {
                                                     Text(
@@ -287,11 +281,8 @@ fun DatePeriodSelectorContainer(
                             }
                         }
                         1 -> TimePeriodSelectorElementContainer(HEIGHT) {
-                            var fromDateText by remember { mutableStateOf(localFromDate.formatDate()) }
-                            LaunchedEffect(localFromDate) { fromDateText = localFromDate.formatDate() }
-
-                            var toDateText by remember { mutableStateOf(localToDate.formatDate()) }
-                            LaunchedEffect(localToDate) { toDateText = localToDate.formatDate() }
+                            val fromDateText by remember(localFromDate) { mutableStateOf(localFromDate.formatDate()) }
+                            val toDateText by remember(localToDate) { mutableStateOf(localToDate.formatDate()) }
 
                             var datePickerState by remember { mutableIntStateOf(0) }
                             val fromDatePickerState = rememberDatePickerState(
@@ -422,6 +413,7 @@ fun DotsIndicator(
             .wrapContentHeight()
         ,
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(size/3)
     ) {
         items(totalDots) { index ->
             val isActive = index == selectedIndex
@@ -435,7 +427,7 @@ fun DotsIndicator(
             )) }
 
             val ANIMATION_DURATION = 25
-            LaunchedEffect(index == selectedIndex) {
+            LaunchedEffect(selectedIndex) {
                 sizeAnimation.animateTo(
                     targetValue =
                         if (isActive) size.value * 2
@@ -466,9 +458,6 @@ fun DotsIndicator(
                     .background(colorAnimation.value)
                 ,
             )
-
-            if (index != totalDots - 1)
-                Spacer(modifier = Modifier.padding(horizontal = 2.dp))
         }
     }
 }
