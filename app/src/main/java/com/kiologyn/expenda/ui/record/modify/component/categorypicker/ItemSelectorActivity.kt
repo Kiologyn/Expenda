@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.ui.navigation.page.home.add.component.categorypicker
+package com.kiologyn.expenda.ui.record.modify.component.categorypicker
 
 import android.app.Activity
 import android.content.Intent
@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,6 +46,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +55,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -59,7 +63,9 @@ import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.category.Category
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
+import com.kiologyn.expenda.ui.theme.Black30
 import com.kiologyn.expenda.ui.theme.Black40
+import com.kiologyn.expenda.ui.theme.Black50
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -107,8 +113,6 @@ class CategorySelectorActivity : ComponentActivity() {
                         ),
                     ) {
                         Surface(
-                            shape = MaterialTheme.shapes.extraLarge,
-                            tonalElevation = 6.dp,
                             modifier = Modifier
                                 .width(IntrinsicSize.Min)
                                 .height(IntrinsicSize.Min)
@@ -117,16 +121,16 @@ class CategorySelectorActivity : ComponentActivity() {
                                     shape = MaterialTheme.shapes.extraLarge,
                                 )
                             ,
+                            shape = MaterialTheme.shapes.extraLarge,
+                            tonalElevation = 6.dp,
                         ) {
                             Column(
                                 modifier = Modifier.padding(24.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(20.dp),
                             ) {
                                 Text(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 20.dp)
-                                    ,
+                                    modifier = Modifier.fillMaxWidth(),
                                     text = modifyDialogTitle,
                                     style = MaterialTheme.typography.labelMedium,
                                 )
@@ -145,8 +149,8 @@ class CategorySelectorActivity : ComponentActivity() {
                                         disabledIndicatorColor = Color.Transparent,
                                         unfocusedIndicatorColor = Color.Transparent,
 
-                                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
-                                        focusedContainerColor = Black40,
+                                        unfocusedContainerColor = Black40,
+                                        focusedContainerColor = Black50,
                                     )
                                 )
 
@@ -166,7 +170,7 @@ class CategorySelectorActivity : ComponentActivity() {
                                             ,
                                             horizontalArrangement = Arrangement.Start
                                         ) {
-                                            TextButton(
+                                            IconButton(
                                                 onClick = {
                                                     CoroutineScope(Dispatchers.IO).launch {
                                                         ExpendaDatabase
@@ -239,46 +243,36 @@ class CategorySelectorActivity : ComponentActivity() {
                             },
                             actions = {
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .padding(horizontal = 20.dp)
-                                    ,
+                                    modifier = Modifier.padding(end = 5.dp),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                                 ) {
                                     if (isEditMode) {
-                                        Icon(
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .clickable {
-                                                    chosenCategory = null
-                                                    openModifyDialog = true
-                                                }
-                                            ,
-                                            imageVector = Icons.Default.Add,
-                                            contentDescription = "category_edit_plus",
-                                        )
-                                        Icon(
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .clickable {
-                                                    isEditMode = false
-                                                }
-                                            ,
-                                            imageVector = Icons.Default.Close,
-                                            contentDescription = "category_edit_close",
-                                        )
+                                        IconButton(onClick = {
+                                            chosenCategory = null
+                                            openModifyDialog = true
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Add,
+                                                contentDescription = "category_edit_plus",
+                                            )
+                                        }
+                                        IconButton(onClick = {
+                                            isEditMode = false
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Close,
+                                                contentDescription = "category_edit_close",
+                                            )
+                                        }
                                     } else {
-                                        Icon(
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .clickable {
-                                                    isEditMode = true
-                                                }
-                                            ,
-                                            imageVector = Icons.Default.Edit,
-                                            contentDescription = "category_edit",
-                                        )
+                                        IconButton(onClick = {
+                                            isEditMode = true
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = "category_edit",
+                                            )
+                                        }
                                     }
                                 }
                             },
@@ -303,7 +297,8 @@ class CategorySelectorActivity : ComponentActivity() {
                                                 openModifyDialog = true
                                             } else {
                                                 val startActivityIntent = Intent(applicationContext, SubcategorySelectorActivity::class.java)
-                                                startActivityIntent.putExtra(SubcategorySelectorActivity.RECEIVED_ID_EXTRA_NAME, category.id)
+                                                startActivityIntent.putExtra(
+                                                    SubcategorySelectorActivity.RECEIVED_ID_EXTRA_NAME, category.id)
 
                                                 activityResultRegistry.register(
                                                     "subcategoryRegisterKey",
@@ -314,7 +309,8 @@ class CategorySelectorActivity : ComponentActivity() {
                                                             SubcategorySelectorActivity.SELECTED_ID_EXTRA_NAME, -1)
                                                         if (subcategoryId !in listOf(null, -1)) {
                                                             val resultIntent = Intent()
-                                                            resultIntent.putExtra(SELECTED_ID_EXTRA_NAME, subcategoryId)
+                                                            resultIntent.putExtra(
+                                                                SELECTED_ID_EXTRA_NAME, subcategoryId)
                                                             setResult(Activity.RESULT_OK, resultIntent)
                                                             finish()
                                                         }
@@ -406,12 +402,10 @@ class SubcategorySelectorActivity : ComponentActivity() {
                             Column(
                                 modifier = Modifier.padding(24.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(20.dp),
                             ) {
                                 Text(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 20.dp)
-                                    ,
+                                    modifier = Modifier.fillMaxWidth(),
                                     text = modifyDialogTitle,
                                     style = MaterialTheme.typography.labelMedium,
                                 )
@@ -430,8 +424,8 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                         disabledIndicatorColor = Color.Transparent,
                                         unfocusedIndicatorColor = Color.Transparent,
 
-                                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
-                                        focusedContainerColor = Black40,
+                                        unfocusedContainerColor = Black40,
+                                        focusedContainerColor = Black50,
                                     )
                                 )
 
@@ -451,7 +445,7 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                             ,
                                             horizontalArrangement = Arrangement.Start
                                         ) {
-                                            TextButton(
+                                            IconButton(
                                                 onClick = {
                                                     CoroutineScope(Dispatchers.IO).launch {
                                                         ExpendaDatabase
@@ -528,46 +522,36 @@ class SubcategorySelectorActivity : ComponentActivity() {
                             },
                             actions = {
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .padding(horizontal = 20.dp)
-                                    ,
+                                    modifier = Modifier.padding(end = 5.dp),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                                 ) {
                                     if (isEditMode) {
-                                        Icon(
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .clickable {
-                                                    chosenSubcategory = null
-                                                    openModifyDialog = true
-                                                }
-                                            ,
-                                            imageVector = Icons.Default.Add,
-                                            contentDescription = "subcategory_edit_plus",
-                                        )
-                                        Icon(
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .clickable {
-                                                    isEditMode = false
-                                                }
-                                            ,
-                                            imageVector = Icons.Default.Close,
-                                            contentDescription = "subcategory_edit_close",
-                                        )
+                                        IconButton(onClick = {
+                                            chosenSubcategory = null
+                                            openModifyDialog = true
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Add,
+                                                contentDescription = "subcategory_edit_plus",
+                                            )
+                                        }
+                                        IconButton(onClick = {
+                                            isEditMode = false
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Close,
+                                                contentDescription = "subcategory_edit_close",
+                                            )
+                                        }
                                     } else {
-                                        Icon(
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .clickable {
-                                                    isEditMode = true
-                                                }
-                                            ,
-                                            imageVector = Icons.Default.Edit,
-                                            contentDescription = "subcategory_edit",
-                                        )
+                                        IconButton(onClick = {
+                                            isEditMode = true
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = "subcategory_edit",
+                                            )
+                                        }
                                     }
                                 }
                             },

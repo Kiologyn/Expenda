@@ -19,8 +19,8 @@ class Helper {
         const val SHARED_PREFERENCES_SETTINGS_NAME = "settings"
 
         const val ROUND_DECIMAL_PLACES = 2
-
         const val CATEGORIES_MAX_LENGTH = 25
+        const val HOME_SCREEN_RECORDS_AMOUNT = 10
     }
 }
 

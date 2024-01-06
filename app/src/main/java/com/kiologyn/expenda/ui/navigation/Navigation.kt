@@ -52,7 +52,7 @@ private val pages: List<PageItem> = listOf(
         { Statistics() },
     ),
 )
-const val START_PAGE_INDEX = 1
+const val START_PAGE_INDEX = 0
 
 @Composable
 fun Navigation() {

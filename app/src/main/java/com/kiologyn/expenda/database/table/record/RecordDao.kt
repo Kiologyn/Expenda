@@ -10,12 +10,30 @@ interface RecordDao {
     @Insert
     suspend fun insert(record: Record)
     @Query("""
+        SELECT record.id
+        FROM record
+        ORDER BY datetime DESC
+    """)
+    suspend fun getAllIdsDESC(): List<Int>
+    @Query("""
         SELECT
             record.datetime as datetime,
             record.amount as amount,
             record.description as description,
             subcategory.name as subcategoryName
-        FROM record JOIN subcategory ON record.idSubcategory = subcategory.id
+        FROM record
+        JOIN subcategory ON record.idSubcategory = subcategory.id
+        WHERE record.id = :id
+    """)
+    suspend fun getWithSubcategoryNameById(id: Int): RecordWithSubcategoryName
+    @Query("""
+        SELECT
+            record.datetime as datetime,
+            record.amount as amount,
+            record.description as description,
+            subcategory.name as subcategoryName
+        FROM record
+        JOIN subcategory ON record.idSubcategory = subcategory.id
         ORDER BY datetime DESC
         LIMIT :quantity OFFSET :offset
     """)

@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.ui.navigation.page.home.add.component
+package com.kiologyn.expenda.ui.record.modify.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing

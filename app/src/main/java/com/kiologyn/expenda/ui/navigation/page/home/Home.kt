@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,11 +26,11 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,17 +50,14 @@ import androidx.compose.ui.unit.sp
 import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.RecordWithSubcategoryName
-import com.kiologyn.expenda.formatDateTime
 import com.kiologyn.expenda.toLocalDateTime
-import com.kiologyn.expenda.ui.navigation.page.home.add.AddActivity
+import com.kiologyn.expenda.ui.record.RecordCard
+import com.kiologyn.expenda.ui.records.RecordsActivity
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.ui.theme.LocalExpendaColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import kotlin.math.abs
 
 
 @Composable
@@ -96,7 +94,7 @@ fun Home() {
 }
 
 @Composable
-fun BalanceView(
+private fun BalanceView(
     modifier: Modifier = Modifier,
 ) {
     var balanceValue by remember { mutableStateOf<Double?>(null) }
@@ -142,7 +140,7 @@ fun BalanceView(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun RecordList(
+private fun RecordList(
     modifier: Modifier = Modifier,
 ) {
     var recordsList by remember { mutableStateOf<List<RecordWithSubcategoryName>>(emptyList()) }
@@ -159,7 +157,7 @@ fun RecordList(
                 .recordDao()
                 .getAllWithSubcategoryNamesWithOffsetDESC(
                     offset = 0,
-                    quantity = 10,
+                    quantity = Helper.HOME_SCREEN_RECORDS_AMOUNT,
                 )
         }
 
@@ -184,7 +182,7 @@ fun RecordList(
                 .fillMaxWidth()
                 .height(ICON_SIZE)
                 .clickable {
-                    // TODO: open activity with all records
+                    localContext.startActivity(Intent(localContext, RecordsActivity::class.java))
                 }
             ,
             contentAlignment = Alignment.Center,
@@ -200,56 +198,61 @@ fun RecordList(
 
         val pullRefreshState = rememberPullRefreshState(refreshing, ::refresh)
         Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-            LazyColumn(Modifier.fillMaxSize()) {
-                if (!refreshing) {
-                    items(recordsList) { record: RecordWithSubcategoryName ->
-                        RecordCard(
-                            category = record.subcategoryName,
-                            amount = record.amount,
-                            datetime = record.datetime.toLocalDateTime(),
+            if (recordsList.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(
+                            rememberScrollState(),
+                            reverseScrolling = true,
                         )
+                    ,
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        "Empty",
+                        color = Color.Gray,
+                        fontSize = 20.sp,
+                    )
+                }
+            } else {
+                LazyColumn(Modifier.fillMaxSize()) {
+                    if (!refreshing) {
+                        items(recordsList) { record: RecordWithSubcategoryName ->
+                            RecordCard(
+                                category = record.subcategoryName,
+                                amount = record.amount,
+                                datetime = record.datetime.toLocalDateTime(),
+                            )
+                        }
+                        if (recordsList.size <= Helper.HOME_SCREEN_RECORDS_AMOUNT)
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(100.dp)
+    //                                    .padding(bottom = 50.dp)
+                                    ,
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    TextButton(
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.3f)
+                                        ,
+                                        onClick = {
+                                            localContext.startActivity(Intent(localContext, RecordsActivity::class.java))
+                                        },
+                                    ) {
+                                        Text("Show all", fontSize = MaterialTheme.typography.bodyLarge.fontSize)
+                                    }
+                                }
+                            }
                     }
                 }
             }
             PullRefreshIndicator(refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
         }
     }
-
-}
-
-@Composable
-fun RecordCard(
-    category: String? = null,
-    amount: Double = 0.toDouble(),
-    datetime: LocalDateTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC),
-    onClick: () -> Unit = {}
-) {
-    ListItem(
-        modifier = Modifier.clickable(onClick = onClick),
-        headlineContent = { Text(category ?: "???") },
-        trailingContent = {
-            Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    abs(amount).toString(),
-                    color =
-                        if (amount > 0) LocalExpendaColors.current.onSurfaceGreen
-                        else if (amount < 0) LocalExpendaColors.current.onSurfaceRed
-                        else LocalExpendaColors.current.grayText
-                    ,
-                    fontSize = 15.sp,
-                )
-                Text(
-                    datetime.formatDateTime(),
-                    color = LocalExpendaColors.current.grayText,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Normal,
-                )
-            }
-        },
-        colors = ListItemDefaults.colors(
-            containerColor = Color.Transparent,
-        ),
-    )
 }
 
 

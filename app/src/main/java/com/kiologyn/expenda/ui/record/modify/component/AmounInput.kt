@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.ui.navigation.page.home.add.component
+package com.kiologyn.expenda.ui.record.modify.component
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,7 +34,7 @@ fun AmountInput(
                 val doubleValue = value.toDoubleOrNull()
                 if (
                     (value == "" || doubleValue != null)
-                    && text.substringAfter('.', ".".repeat(Helper.ROUND_DECIMAL_PLACES))
+                    && value.substringAfter('.', " ".repeat(Helper.ROUND_DECIMAL_PLACES))
                         .length <= Helper.ROUND_DECIMAL_PLACES
                 ) {
                     text = value
