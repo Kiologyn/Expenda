@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.database.table.category.Category
 import com.kiologyn.expenda.database.table.category.CategoryDao
 import com.kiologyn.expenda.database.table.record.Record
@@ -20,6 +19,7 @@ import com.kiologyn.expenda.database.table.subcategory.SubcategoryDao
         Category::class,
     ],
     version = 1,
+    exportSchema = false,
 )
 abstract class ExpendaDatabase : RoomDatabase() {
     abstract fun recordDao(): RecordDao

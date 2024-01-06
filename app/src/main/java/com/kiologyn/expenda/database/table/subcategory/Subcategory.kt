@@ -1,5 +1,6 @@
 package com.kiologyn.expenda.database.table.subcategory
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -26,6 +27,6 @@ import com.kiologyn.expenda.database.table.category.Category
 )
 data class Subcategory(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val name: String,
-    val idCategory: Int,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "idCategory", index = true) val idCategory: Int,
 )
