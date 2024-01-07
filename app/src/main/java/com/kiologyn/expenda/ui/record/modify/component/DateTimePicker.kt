@@ -38,7 +38,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.kiologyn.expenda.formatDate
 import com.kiologyn.expenda.formatTime
 import com.kiologyn.expenda.toLocalDateTime
-import com.kiologyn.expenda.toMilliseconds
+import com.kiologyn.expenda.toSeconds
 import java.time.LocalDateTime
 
 
@@ -130,7 +130,9 @@ fun TimePickerElement(
         initialHour = dateTimeState.value.hour,
         initialMinute = dateTimeState.value.minute,
     )
-    val timePickerText = remember { mutableStateOf(dateTimeState.value.formatTime()) }
+    val timePickerText = remember(dateTimeState.value) {
+        mutableStateOf(dateTimeState.value.formatTime())
+    }
     PickerContainer(
         modifier = modifier,
         picker = { openDialog ->
@@ -139,24 +141,19 @@ fun TimePickerElement(
                     openDialog.value = false
                 },
                 confirmButton = {
-                    TextButton(
-                        onClick = {
-                            openDialog.value = false
-                            dateTimeState.value = dateTimeState.value
-                                .withHour(timePickerState.hour)
-                                .withMinute(timePickerState.minute)
-                            timePickerText.value = dateTimeState.value.formatTime()
-                        },
-                    ) {
+                    TextButton(onClick = {
+                        openDialog.value = false
+                        dateTimeState.value = dateTimeState.value
+                            .withHour(timePickerState.hour)
+                            .withMinute(timePickerState.minute)
+                    }) {
                         Text("OK")
                     }
                 },
                 dismissButton = {
-                    TextButton(
-                        onClick = {
-                            openDialog.value = false
-                        }
-                    ) {
+                    TextButton(onClick = {
+                        openDialog.value = false
+                    }) {
                         Text("Cancel")
                     }
                 }
@@ -164,7 +161,7 @@ fun TimePickerElement(
                 TimePicker(state = timePickerState)
             }
         },
-        timePickerText,
+        pickerText = timePickerText,
     )
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -174,11 +171,11 @@ fun DatePickerElement(
     dateTimeState: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now()) },
 ) {
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = dateTimeState.value.toMilliseconds(),
+        initialSelectedDateMillis = dateTimeState.value.toSeconds()*1000,
     )
-    val datePickerText = remember { mutableStateOf(
-        dateTimeState.value.formatDate()
-    ) }
+    val datePickerText = remember(dateTimeState.value) {
+        mutableStateOf(dateTimeState.value.formatDate())
+    }
     PickerContainer(
         modifier = modifier,
         picker = { openDialog ->
@@ -187,16 +184,14 @@ fun DatePickerElement(
                     openDialog.value = false
                 },
                 confirmButton = {
-                    TextButton(
-                        onClick = {
-                            openDialog.value = false
-                            dateTimeState.value = LocalDateTime.of(
-                                (datePickerState.selectedDateMillis ?: 0).toLocalDateTime().toLocalDate(),
-                                dateTimeState.value.toLocalTime(),
-                            )
-                            datePickerText.value = dateTimeState.value.formatDate()
-                        },
-                    ) {
+                    TextButton(onClick = {
+                        openDialog.value = false
+                        dateTimeState.value = LocalDateTime.of(
+                            (datePickerState.selectedDateMillis?.div(1000) ?: 0)
+                                .toLocalDateTime().toLocalDate(),
+                            dateTimeState.value.toLocalTime(),
+                        )
+                    }) {
                         Text("OK")
                     }
                 },
@@ -213,7 +208,7 @@ fun DatePickerElement(
                 DatePicker(state = datePickerState)
             }
         },
-        datePickerText,
+        pickerText = datePickerText,
     )
 }
 @Composable

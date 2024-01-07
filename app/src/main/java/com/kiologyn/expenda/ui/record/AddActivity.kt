@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.ui.navigation.page.home
+package com.kiologyn.expenda.ui.record
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -33,7 +33,7 @@ import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.Record
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
-import com.kiologyn.expenda.toMilliseconds
+import com.kiologyn.expenda.toSeconds
 import com.kiologyn.expenda.ui.record.modify.RecordModify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -122,7 +122,7 @@ class AddActivity : ComponentActivity() {
                                 ) return@Button
 
                                 val record = Record(
-                                    datetime = dateTimeState.value.toMilliseconds(),
+                                    datetime = dateTimeState.value.toSeconds(),
                                     amount = (if (isIncomeState.value) 1 else -1) * amountState.value!!,
                                     description = descriptionState.value,
                                     idSubcategory = subcategoryState.value!!.id

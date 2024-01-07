@@ -51,6 +51,7 @@ import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.RecordWithSubcategoryName
 import com.kiologyn.expenda.toLocalDateTime
+import com.kiologyn.expenda.ui.record.AddActivity
 import com.kiologyn.expenda.ui.record.RecordCard
 import com.kiologyn.expenda.ui.records.RecordsActivity
 import com.kiologyn.expenda.ui.theme.ExpendaTheme

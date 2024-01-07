@@ -66,7 +66,7 @@ fun CategoryPicker(
     Box(
         modifier = modifier
             .clickable {
-                startForResult?.launch(Intent(localContext, CategorySelectorActivity::class.java))
+                startForResult.launch(Intent(localContext, CategorySelectorActivity::class.java))
             }
         ,
         contentAlignment = Alignment.Center,

@@ -26,7 +26,7 @@ import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.DailyBalanceRecord
 import com.kiologyn.expenda.formatDateMY
 import com.kiologyn.expenda.toLocalDateTime
-import com.kiologyn.expenda.toMilliseconds
+import com.kiologyn.expenda.toSeconds
 import com.kiologyn.expenda.ui.navigation.page.statistics.StatisticContainer
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import java.time.LocalDateTime
@@ -48,8 +48,8 @@ fun BalanceTrendStatistic(
         LaunchedEffect(fromDate.value, toDate.value) {
             val db = ExpendaDatabase.build(localContext)
             points = db.recordDao().dailyBalanceRecordPerPeriod(
-                fromDate.value.toMilliseconds(),
-                toDate.value.toMilliseconds(),
+                fromDate.value.toSeconds(),
+                toDate.value.toSeconds(),
             )
         }
 

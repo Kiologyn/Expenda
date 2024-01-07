@@ -47,7 +47,7 @@ import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.R
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.CategoryExpense
-import com.kiologyn.expenda.toMilliseconds
+import com.kiologyn.expenda.toSeconds
 import com.kiologyn.expenda.ui.navigation.page.statistics.StatisticContainer
 import com.kiologyn.expenda.ui.navigation.page.statistics.Statistics
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
@@ -76,12 +76,12 @@ fun CategorySpendingStatistic(
             val recordDao = db.recordDao()
             pieData = (
                 if (chosenCategory == null) recordDao.categoriesExpenses(
-                    fromDate.value.toMilliseconds(),
-                    toDate.value.toMilliseconds(),
+                    fromDate.value.toSeconds(),
+                    toDate.value.toSeconds(),
                 )
                 else recordDao.subcategoriesExpensesByCategory(
-                    fromDate.value.toMilliseconds(),
-                    toDate.value.toMilliseconds(),
+                    fromDate.value.toSeconds(),
+                    toDate.value.toSeconds(),
                     chosenCategory!!,
                 )
             ).sortedBy { -it.amount }

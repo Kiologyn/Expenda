@@ -60,7 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kiologyn.expenda.formatDate
 import com.kiologyn.expenda.toLocalDateTime
-import com.kiologyn.expenda.toMilliseconds
+import com.kiologyn.expenda.toSeconds
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.ui.theme.LocalExpendaColors
 import java.time.DayOfWeek
@@ -286,28 +286,26 @@ fun DatePeriodSelectorContainer(
 
                             var datePickerState by remember { mutableIntStateOf(0) }
                             val fromDatePickerState = rememberDatePickerState(
-                                initialSelectedDateMillis = localFromDate.toMilliseconds()
+                                initialSelectedDateMillis = localFromDate.toSeconds()*1000
                             )
                             val toDatePickerState = rememberDatePickerState(
-                                initialSelectedDateMillis = localToDate.toMilliseconds()
+                                initialSelectedDateMillis = localToDate.toSeconds()*1000
                             )
 
                             if (datePickerState != 0)
                                 DatePickerDialog(
                                     onDismissRequest = { datePickerState = 0 },
                                     confirmButton = {
-                                        TextButton(
-                                            onClick = {
-                                                (
-                                                    if (datePickerState == 1) datePeriodStates["from"]!!
-                                                    else datePeriodStates["to"]!!
-                                                ).value = (
-                                                    if (datePickerState == 1) fromDatePickerState
-                                                    else toDatePickerState
-                                                ).selectedDateMillis!!.toLocalDateTime()
-                                                datePickerState = 0
-                                            },
-                                        ) {
+                                        TextButton(onClick = {
+                                            (
+                                                if (datePickerState == 1) datePeriodStates["from"]!!
+                                                else datePeriodStates["to"]!!
+                                            ).value = (
+                                                if (datePickerState == 1) fromDatePickerState
+                                                else toDatePickerState
+                                            ).selectedDateMillis!!.div(1000).toLocalDateTime()
+                                            datePickerState = 0
+                                        }) {
                                             Text("OK")
                                         }
                                     },
