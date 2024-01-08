@@ -24,9 +24,9 @@ import com.kiologyn.expenda.ui.theme.Black40
 @Composable
 fun AmountInput(
     modifier: Modifier = Modifier,
-    amountState: MutableState<Double?> = remember { mutableStateOf(null as Double?) },
+    amountState: MutableState<Double?> = remember { mutableStateOf(null) },
 ) {
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(amountState.value?.toString() ?: "") }
     TextField(
         value = text,
         onValueChange = { value ->

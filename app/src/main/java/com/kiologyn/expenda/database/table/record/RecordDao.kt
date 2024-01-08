@@ -3,18 +3,41 @@ package com.kiologyn.expenda.database.table.record
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Upsert
 
 
 @Dao
 interface RecordDao {
     @Insert
     suspend fun insert(record: Record)
+    @Upsert
+    suspend fun upsert(record: Record)
+    @Query("""
+        DELETE
+        FROM record
+        WHERE record.id = :id
+    """)
+    suspend fun deleteById(id: Int)
     @Query("""
         SELECT record.id
         FROM record
         ORDER BY datetime DESC
     """)
     suspend fun getAllIdsDESC(): List<Int>
+    @Query("""
+        SELECT
+            record.id AS id,
+            record.datetime AS datetime,
+            record.amount AS amount,
+            record.description AS description,
+            subcategory.id AS subcategoryId,
+            subcategory.name AS subcategoryName,
+            subcategory.idCategory as subcategoryCategoryId
+        FROM record
+        JOIN subcategory ON record.idSubcategory = subcategory.id
+        WHERE record.id = :id
+    """)
+    suspend fun getByIdWithSubcategory(id: Int): RecordWithSubcategory
     @Query("""
         SELECT
             record.datetime AS datetime,
@@ -34,31 +57,29 @@ interface RecordDao {
     """)
     suspend fun getByIdWithSubcategoryAndDailyFirstFlag(id: Int): RecordWithSubcategoryNameWithDailyFirstFlag
     @Query("""
-        SELECT COALESCE(
-            (
-                SELECT record.id
-                FROM record
-                WHERE DATE(record.datetime, 'unixepoch') = (
-                    SELECT DATE(sqrecord.datetime, 'unixepoch')
-                    FROM record AS sqrecord
-                    WHERE DATE(sqrecord.datetime, 'unixepoch') >= DATE(:date, 'unixepoch')
-                    ORDER BY sqrecord.datetime
-                    LIMIT 1
-                )
-                ORDER BY record.datetime DESC
-                LIMIT 1
-            ),
-            (
-                SELECT record.id
-                FROM record
-                ORDER BY record.datetime DESC
+        SELECT COALESCE((
+            SELECT record.id
+            FROM record
+            WHERE DATE(record.datetime, 'unixepoch') = (
+                SELECT DATE(sqrecord.datetime, 'unixepoch')
+                FROM record AS sqrecord
+                WHERE DATE(sqrecord.datetime, 'unixepoch') >= DATE(:date, 'unixepoch')
+                ORDER BY sqrecord.datetime
                 LIMIT 1
             )
-        )
+            ORDER BY record.datetime DESC
+            LIMIT 1
+        ), (
+            SELECT record.id
+            FROM record
+            ORDER BY record.datetime DESC
+            LIMIT 1
+        ))
     """)
     suspend fun getIdOfDailyLast(date: Long): Int?
     @Query("""
         SELECT
+            record.id AS id,
             record.datetime AS datetime,
             record.amount AS amount,
             record.description AS description,
@@ -134,7 +155,18 @@ data class CategoryExpense(
     val amount: Double,
 )
 
+data class RecordWithSubcategory(
+    val id: Int,
+    val datetime: Long,
+    val amount: Double,
+    val description: String,
+    val subcategoryId: Int,
+    val subcategoryName: String,
+    val subcategoryCategoryId: Int,
+)
+
 data class RecordWithSubcategoryName(
+    val id: Int,
     val datetime: Long,
     val amount: Double,
     val description: String,

@@ -4,7 +4,6 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 
@@ -29,14 +28,14 @@ class Helper {
 fun Long.toLocalDateTime(): LocalDateTime {
     return LocalDateTime.ofInstant(Instant.ofEpochSecond(this), ZoneId.systemDefault())
 }
+fun LocalDateTime.toSeconds(): Long {
+    return this.atZone(ZoneId.systemDefault()).toInstant().epochSecond
+}
 fun LocalDateTime.adjustToNearestDay(): LocalDateTime {
     return LocalDateTime.of(
         toLocalDate(),
         LocalTime.MIDNIGHT,
     ).plusDays(if (toLocalTime().isAfter(LocalTime.NOON)) 1 else 0)
-}
-fun LocalDateTime.toSeconds(): Long {
-    return this.toEpochSecond(ZoneOffset.UTC)
 }
 fun LocalDateTime.formatTime(): String {
     return this.format(DateTimeFormatter.ofPattern(Helper.TIME_FORMAT))

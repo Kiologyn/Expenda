@@ -56,10 +56,10 @@ private val DarkColorScheme = darkColorScheme(
     onError = Color(0xFF690005),
     onErrorContainer = Color(0xFFFFDAD6),
 
-    background = Color(0xFF151515),
+    background = Color(0xFF101010),
     onBackground = Color(0xFFE8E8E8),
 
-    surface = Color(0xFF151515),
+    surface = Color(0xFF101010),
     onSurface = Color(0xFFE8E8E8),
     surfaceVariant = Color(0xFF4C4C4C),
     onSurfaceVariant = Color(0xFFCECECE),
@@ -75,7 +75,7 @@ private val DarkColorScheme = darkColorScheme(
 private val DarkColors = ExpendaColors(
     onSurfaceRed = Color(0xFFE62D2D),
     onSurfaceGreen = Color(0xFF11D111),
-    surfaceContainer = Color(0xFF1E1E1E),
+    surfaceContainer = Color(0xFF1A1A1A),
     surfaceContainerVariant = Color(0xFFE4E4E4),
 
     arrowRed = Color(0xFFDB2727),
@@ -83,9 +83,9 @@ private val DarkColors = ExpendaColors(
     arrowsGray = Color(0xFF888888),
     grayText = Color(0xFF666666),
 
-    periodPicker = Color(0xFF262626),
-    dateRangePickerStroke = Color(0xFFAAAAAA),
-    dotIndicatorSelected = Color(0xFFC4C4C4),
+    periodPicker = Color(0xFF222222),
+    dateRangePickerStroke = Color(0xFFCCCCCC),
+    dotIndicatorSelected = Color(0xFFCCCCCC),
     dotIndicatorUnselected = Color(0xFF4D4D4D),
 )
 

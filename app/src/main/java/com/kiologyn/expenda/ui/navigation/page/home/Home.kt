@@ -36,7 +36,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,13 +51,11 @@ import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.RecordWithSubcategoryName
 import com.kiologyn.expenda.toLocalDateTime
 import com.kiologyn.expenda.ui.record.AddActivity
+import com.kiologyn.expenda.ui.record.EditActivity
 import com.kiologyn.expenda.ui.record.RecordCard
 import com.kiologyn.expenda.ui.records.RecordsActivity
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.ui.theme.LocalExpendaColors
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -147,12 +144,10 @@ private fun RecordList(
     var recordsList by remember { mutableStateOf<List<RecordWithSubcategoryName>>(emptyList()) }
 
     val localContext = LocalContext.current
-    val refreshScope = rememberCoroutineScope()
-    var refreshing by remember { mutableStateOf(false) }
-    fun refresh() = refreshScope.launch {
-        refreshing = true
-
-        CoroutineScope(Dispatchers.IO).launch {
+    var refresh by remember { mutableStateOf(true) }
+    LaunchedEffect(refresh) {
+        if (refresh) {
+            recordsList = emptyList()
             recordsList = ExpendaDatabase
                 .build(localContext)
                 .recordDao()
@@ -160,12 +155,8 @@ private fun RecordList(
                     offset = 0,
                     quantity = Helper.HOME_SCREEN_RECORDS_AMOUNT,
                 )
+            refresh = false
         }
-
-        refreshing = false
-    }
-    LaunchedEffect(true) {
-        refresh()
     }
 
     val ICON_SIZE = 35.dp
@@ -197,9 +188,9 @@ private fun RecordList(
         }
 
 
-        val pullRefreshState = rememberPullRefreshState(refreshing, ::refresh)
+        val pullRefreshState = rememberPullRefreshState(refresh, { refresh = true })
         Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-            if (recordsList.isEmpty()) {
+            if (recordsList.isEmpty() && !refresh) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -218,12 +209,22 @@ private fun RecordList(
                 }
             } else {
                 LazyColumn(Modifier.fillMaxSize()) {
-                    if (!refreshing) {
+                    if (!refresh) {
                         items(recordsList) { record: RecordWithSubcategoryName ->
                             RecordCard(
                                 category = record.subcategoryName,
                                 amount = record.amount,
                                 datetime = record.datetime.toLocalDateTime(),
+                                onClick = {
+                                    localContext.startActivity(
+                                        Intent(
+                                            localContext,
+                                            EditActivity::class.java,
+                                        ).apply {
+                                            putExtra(EditActivity.RECORD_ID_EXTRA_NAME, record.id)
+                                        }
+                                    )
+                                },
                             )
                         }
                         if (recordsList.size <= Helper.HOME_SCREEN_RECORDS_AMOUNT)
@@ -232,7 +233,6 @@ private fun RecordList(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(100.dp)
-    //                                    .padding(bottom = 50.dp)
                                     ,
                                     contentAlignment = Alignment.Center,
                                 ) {
@@ -251,7 +251,7 @@ private fun RecordList(
                     }
                 }
             }
-            PullRefreshIndicator(refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
+            PullRefreshIndicator(refresh, pullRefreshState, Modifier.align(Alignment.TopCenter))
         }
     }
 }

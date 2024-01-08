@@ -55,16 +55,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.RecordWithSubcategoryNameWithDailyFirstFlag
-import com.kiologyn.expenda.formatDate
 import com.kiologyn.expenda.formatDateDMY
 import com.kiologyn.expenda.toLocalDateTime
 import com.kiologyn.expenda.toSeconds
 import com.kiologyn.expenda.ui.record.AddActivity
+import com.kiologyn.expenda.ui.record.EditActivity
 import com.kiologyn.expenda.ui.record.RecordCard
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.ui.theme.LocalExpendaColors
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -171,7 +169,6 @@ class RecordsActivity : ComponentActivity() {
                             onDismissRequest = { openDialog = false },
                             confirmButton = {
                                 TextButton(onClick = {
-                                    Log.i("asdf", (datePickerState.selectedDateMillis?.div(1000) ?: 0).toString())
                                     coroutineScope.launch {
                                         val selectedDailyRecordIndex = recordsIds.value.indexOf(
                                             ExpendaDatabase
@@ -274,6 +271,16 @@ class RecordsActivity : ComponentActivity() {
                             category = record?.subcategoryName,
                             amount = record?.amount,
                             datetime = record?.datetime?.toLocalDateTime(),
+                            onClick = {
+                                startActivity(
+                                    Intent(
+                                        applicationContext,
+                                        EditActivity::class.java,
+                                    ).apply {
+                                        putExtra(EditActivity.RECORD_ID_EXTRA_NAME, recordId)
+                                    }
+                                )
+                            },
                         )
                     }
                 }

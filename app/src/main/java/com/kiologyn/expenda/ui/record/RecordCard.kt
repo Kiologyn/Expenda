@@ -22,10 +22,13 @@ fun RecordCard(
     category: String? = null,
     amount: Double? = null,
     datetime: LocalDateTime? = null,
-    onClick: () -> Unit = {},
+    onClick: (() -> Unit)? = null,
 ) {
     ListItem(
-        modifier = Modifier.clickable(onClick = onClick),
+        modifier =
+            if (onClick == null) Modifier
+            else Modifier.clickable(onClick = onClick)
+        ,
         headlineContent = { Text(category ?: "???") },
         trailingContent = {
             Column(horizontalAlignment = Alignment.End) {

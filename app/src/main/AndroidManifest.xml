@@ -41,6 +41,11 @@
         </activity>
 
         <activity
+            android:name=".ui.record.EditActivity"
+            android:theme="@style/Theme.Expenda">
+        </activity>
+
+        <activity
             android:name=".ui.records.RecordsActivity"
             android:theme="@style/Theme.Expenda">
         </activity>
