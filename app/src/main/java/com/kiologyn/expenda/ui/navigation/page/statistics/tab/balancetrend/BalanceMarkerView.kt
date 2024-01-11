@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.ui.navigation.page.statistics.component.balancetrend
+package com.kiologyn.expenda.ui.navigation.page.statistics.tab.balancetrend
 
 import android.content.Context
 import android.graphics.Color

@@ -117,9 +117,9 @@ class AddActivity : ComponentActivity() {
                             ,
                             onClick = {
                                 if (
-                                    amountState.value == null ||
+                                    amountState.value in listOf(null, 0.0) ||
                                     subcategoryState.value == null
-                                ) return@Button
+                                ) return@Button // TODO: highlight inputs with red
 
                                 val record = Record(
                                     datetime = dateTimeState.value.toSeconds(),

@@ -61,7 +61,7 @@ fun Navigation() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
 
-        content = {padding ->
+        content = { padding ->
             NavHost(
                 modifier = Modifier.padding(padding),
                 navController = navController,

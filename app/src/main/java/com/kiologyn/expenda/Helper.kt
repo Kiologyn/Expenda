@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import kotlin.math.pow
 
 
 class Helper {
@@ -51,4 +52,9 @@ fun LocalDateTime.formatDateDMY(): String {
 }
 fun LocalDateTime.formatDateTime(): String {
     return this.format(DateTimeFormatter.ofPattern(Helper.DATETIME_FORMAT))
+}
+
+fun Double.round(precision: Int = Helper.ROUND_DECIMAL_PLACES): Double {
+    val precisionValue = 10.0.pow(precision.toDouble())
+    return (this * precisionValue).toInt() / precisionValue
 }

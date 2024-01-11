@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.ui.navigation.page.statistics.component.categoryspending
+package com.kiologyn.expenda.ui.navigation.page.statistics.tab.categoryspending
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -56,10 +57,21 @@ import java.time.LocalDateTime
 import kotlin.math.pow
 
 
+
+fun CategorySpendingStatistics(
+    lazyListScope: LazyListScope,
+    fromDate: MutableState<LocalDateTime>,
+    toDate: MutableState<LocalDateTime>,
+) {
+    with(lazyListScope) {
+        item { CategorySpendingStatistic(fromDate, toDate) }
+    }
+}
+
 @Composable
-fun CategorySpendingStatistic(
-    fromDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now().minusWeeks(1)) },
-    toDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now()) },
+private fun CategorySpendingStatistic(
+    fromDate: MutableState<LocalDateTime>,
+    toDate: MutableState<LocalDateTime>,
 ) {
     val ANIMATION_DURATION = 400
     var titleText by remember { mutableStateOf("Spending by categories") }
@@ -72,19 +84,19 @@ fun CategorySpendingStatistic(
 
         val localContext = LocalContext.current
         LaunchedEffect(fromDate.value, toDate.value, chosenCategory) {
-            val db = ExpendaDatabase.build(localContext)
-            val recordDao = db.recordDao()
-            pieData = (
-                if (chosenCategory == null) recordDao.categoriesExpenses(
-                    fromDate.value.toSeconds(),
-                    toDate.value.toSeconds(),
-                )
-                else recordDao.subcategoriesExpensesByCategory(
-                    fromDate.value.toSeconds(),
-                    toDate.value.toSeconds(),
-                    chosenCategory!!,
-                )
-            ).sortedBy { -it.amount }
+            pieData = ExpendaDatabase
+                .build(localContext)
+                .recordDao().run {
+                    if (chosenCategory == null) categoriesExpenses(
+                        fromDate.value.toSeconds(),
+                        toDate.value.toSeconds(),
+                    )
+                    else subcategoriesExpensesByCategory(
+                        fromDate.value.toSeconds(),
+                        toDate.value.toSeconds(),
+                        chosenCategory!!,
+                    )
+                }.sortedBy { -it.amount }
             allAmount = pieData.sumOf { item -> item.amount }
         }
 
@@ -223,7 +235,7 @@ fun CategorySpendingStatistic(
 }
 
 @Composable
-fun CategoryExpenseCard(
+private fun CategoryExpenseCard(
     name: String = "None",
     amount: Double = 0.toDouble(),
 ) {

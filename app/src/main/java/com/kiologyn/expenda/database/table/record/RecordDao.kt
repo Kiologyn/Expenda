@@ -143,6 +143,14 @@ interface RecordDao {
         GROUP BY subcategory.id
     """)
     suspend fun subcategoriesExpensesByCategory(fromDate: Long, toDate: Long, categoryName: String): List<CategoryExpense>
+    @Query("""
+        SELECT
+            SUM(CASE WHEN amount > 0 THEN amount ELSE 0 END) AS income,
+            -SUM(CASE WHEN amount < 0 THEN amount ELSE 0 END) AS expense
+        FROM record
+        WHERE DATE(datetime, 'unixepoch') BETWEEN DATE(:fromDate, 'unixepoch') AND DATE(:toDate, 'unixepoch')
+    """)
+    suspend fun cashFlow(fromDate: Long, toDate: Long): CashFlow
 }
 
 data class DailyBalanceRecord(
@@ -179,4 +187,9 @@ data class RecordWithSubcategoryNameWithDailyFirstFlag(
     val description: String,
     val subcategoryName: String,
     val isDailyFirst: Boolean,
+)
+
+data class CashFlow(
+    val income: Double,
+    val expense: Double,
 )

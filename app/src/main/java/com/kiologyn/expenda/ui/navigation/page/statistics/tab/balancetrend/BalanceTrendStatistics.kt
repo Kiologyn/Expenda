@@ -1,8 +1,9 @@
-package com.kiologyn.expenda.ui.navigation.page.statistics.component.balancetrend
+package com.kiologyn.expenda.ui.navigation.page.statistics.tab.balancetrend
 
 import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -12,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.LineChart
@@ -28,29 +28,40 @@ import com.kiologyn.expenda.formatDateMY
 import com.kiologyn.expenda.toLocalDateTime
 import com.kiologyn.expenda.toSeconds
 import com.kiologyn.expenda.ui.navigation.page.statistics.StatisticContainer
-import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import java.time.LocalDateTime
 
 
-@Composable
-fun BalanceTrendStatistic(
-    fromDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now().minusWeeks(1)) },
-    toDate: MutableState<LocalDateTime> = remember { mutableStateOf(LocalDateTime.now()) },
+fun BalanceTrendStatistics(
+    lazyListScope: LazyListScope,
+    fromDate: MutableState<LocalDateTime>,
+    toDate: MutableState<LocalDateTime>,
 ) {
-    val ANIMATION_DURATION = 500
+    with(lazyListScope) {
+        item { DailyBalanceTrend(fromDate, toDate) }
+    }
+}
 
-    StatisticContainer(title = "Balance trend") {
+@Composable
+private fun DailyBalanceTrend(
+    fromDate: MutableState<LocalDateTime>,
+    toDate: MutableState<LocalDateTime>,
+) {
+    val localContext = LocalContext.current
+    val ANIMATION_DURATION = 400
+
+    StatisticContainer(title = "Daily balance trend") {
         var points by remember { mutableStateOf(listOf(
-            DailyBalanceRecord(0, 0.toDouble())
+            DailyBalanceRecord(0, 0.0)
         )) }
 
-        val localContext = LocalContext.current
         LaunchedEffect(fromDate.value, toDate.value) {
-            val db = ExpendaDatabase.build(localContext)
-            points = db.recordDao().dailyBalanceRecordPerPeriod(
-                fromDate.value.toSeconds(),
-                toDate.value.toSeconds(),
-            )
+            points = ExpendaDatabase
+                .build(localContext)
+                .recordDao()
+                .dailyBalanceRecordPerPeriod(
+                    fromDate.value.toSeconds(),
+                    toDate.value.toSeconds(),
+                )
         }
 
         AndroidView(
@@ -120,8 +131,3 @@ fun BalanceTrendStatistic(
         )
     }
 }
-
-
-@Preview
-@Composable
-private fun Preview() = ExpendaTheme { BalanceTrendStatistic() }
