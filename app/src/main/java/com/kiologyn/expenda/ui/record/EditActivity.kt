@@ -95,7 +95,7 @@ class EditActivity : ComponentActivity() {
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = null
                             )
                         }
                     },

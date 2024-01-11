@@ -6,24 +6,23 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -84,7 +83,7 @@ fun Home() {
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add",
+                    contentDescription = null,
                 )
             }
         },
@@ -101,6 +100,7 @@ private fun BalanceView(
     var refreshBalance by remember { mutableStateOf(true) }
     LaunchedEffect(refreshBalance) {
         if (refreshBalance) {
+            balanceValue = null
             balanceValue = ExpendaDatabase
                 .build(localContext)
                 .recordDao()
@@ -123,15 +123,14 @@ private fun BalanceView(
                 color = LocalExpendaColors.current.grayText,
             )
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { refreshBalance = true }
-                ,
-                text = balanceValue?.let{ "%.${Helper.ROUND_DECIMAL_PLACES}f".format(it) } ?: "•••",
-                textAlign = TextAlign.Center,
-                fontSize = 30.sp,
-            )
+            TextButton(onClick = { refreshBalance = true }) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(0.5f),
+                    text = balanceValue?.let{ "%.${Helper.ROUND_DECIMAL_PLACES}f".format(it) } ?: "•••",
+                    textAlign = TextAlign.Center,
+                    fontSize = 30.sp,
+                )
+            }
         }
     }
 }
@@ -159,8 +158,8 @@ private fun RecordList(
         }
     }
 
-    val ICON_SIZE = 35.dp
-    val ELEMENT_SHAPE = RoundedCornerShape(ICON_SIZE, ICON_SIZE, 0.dp, 0.dp)
+    val BUTTON_HEIGHT = 50.dp
+    val ELEMENT_SHAPE = RoundedCornerShape(BUTTON_HEIGHT/2, BUTTON_HEIGHT/2, 0.dp, 0.dp)
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -168,28 +167,33 @@ private fun RecordList(
             .background(LocalExpendaColors.current.surfaceContainer)
         ,
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(ICON_SIZE)
+                .height(BUTTON_HEIGHT)
+                .clip(RoundedCornerShape(BUTTON_HEIGHT))
                 .clickable {
                     localContext.startActivity(Intent(localContext, RecordsActivity::class.java))
                 }
             ,
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                modifier = Modifier.size(ICON_SIZE*0.8f),
-                imageVector = Icons.Default.List,
-                contentDescription = "recordsList",
-                tint = LocalExpendaColors.current.grayText,
-            )
+            Text(text = "See All Records")
         }
 
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth(0.75f)
+                .height(2.dp)
+        )
 
         val pullRefreshState = rememberPullRefreshState(refresh, { refresh = true })
-        Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+        Box(
+            modifier = Modifier.pullRefresh(pullRefreshState),
+            contentAlignment = Alignment.TopCenter,
+        ) {
             if (recordsList.isEmpty() && !refresh) {
                 Box(
                     modifier = Modifier
@@ -208,7 +212,10 @@ private fun RecordList(
                     )
                 }
             } else {
-                LazyColumn(Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
                     if (!refresh) {
                         items(recordsList) { record: RecordWithSubcategoryName ->
                             RecordCard(
@@ -227,7 +234,7 @@ private fun RecordList(
                                 },
                             )
                         }
-                        if (recordsList.size <= Helper.HOME_SCREEN_RECORDS_AMOUNT)
+                        if (recordsList.size == Helper.HOME_SCREEN_RECORDS_AMOUNT)
                             item {
                                 Box(
                                     modifier = Modifier
@@ -257,29 +264,6 @@ private fun RecordList(
 }
 
 
-@Composable
-fun RecordListPreview() {
-    LazyColumn(Modifier.background(LocalExpendaColors.current.surfaceContainer)) {
-        itemsIndexed(listOf(
-            "Food",
-            "Home",
-            "Clothes",
-            "Loan",
-            "Other",
-        )) {index, category ->
-            RecordCard(
-                category = category,
-                amount = ((index-2)*13.412),
-            )
-        }
-    }
-}
 @Preview
 @Composable
 private fun Preview() = ExpendaTheme { Home() }
-@Preview
-@Composable
-fun RecordListPreviewPreview() = ExpendaTheme { RecordListPreview() }
-//@Preview
-//@Composable
-//fun RecordListPreviewDark() = ExpendaTheme { Overview() }

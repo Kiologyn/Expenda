@@ -120,7 +120,7 @@ class RecordsActivity : ComponentActivity() {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
+                        contentDescription = null,
                     )
                 }
             }
@@ -135,7 +135,7 @@ class RecordsActivity : ComponentActivity() {
                 IconButton(onClick = { finish() }) {
                     Icon(
                         imageVector = Icons.Rounded.Close,
-                        contentDescription = "close records list"
+                        contentDescription = null
                     )
                 }
             },
@@ -158,7 +158,7 @@ class RecordsActivity : ComponentActivity() {
                     }) {
                         Icon(
                             imageVector = Icons.Default.DateRange,
-                            contentDescription = "jump to date",
+                            contentDescription = null,
                         )
                     }
 

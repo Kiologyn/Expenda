@@ -213,7 +213,7 @@ fun DatePeriodSelectorContainer(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowLeft,
-                                    contentDescription = "left arrow",
+                                    contentDescription = null,
                                     tint = LocalTextStyle.current.color,
                                 )
                             }
@@ -263,7 +263,7 @@ fun DatePeriodSelectorContainer(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowRight,
-                                    contentDescription = "right arrow",
+                                    contentDescription = null,
                                     tint = LocalTextStyle.current.color,
                                 )
                             }

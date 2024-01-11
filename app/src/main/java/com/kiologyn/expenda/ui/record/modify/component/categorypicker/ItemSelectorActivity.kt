@@ -178,7 +178,7 @@ class CategorySelectorActivity : ComponentActivity() {
                                             ) {
                                                 Icon(
                                                     imageVector = Icons.Outlined.Delete,
-                                                    contentDescription = "delete_category",
+                                                    contentDescription = null,
                                                     tint = Color(0xFFBD3131),
                                                 )
                                             }
@@ -231,7 +231,7 @@ class CategorySelectorActivity : ComponentActivity() {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Filled.ArrowBack,
-                                        contentDescription = "Back"
+                                        contentDescription = null
                                     )
                                 }
                             },
@@ -247,7 +247,7 @@ class CategorySelectorActivity : ComponentActivity() {
                                         }) {
                                             Icon(
                                                 imageVector = Icons.Default.Add,
-                                                contentDescription = "category_edit_plus",
+                                                contentDescription = null,
                                             )
                                         }
                                         IconButton(onClick = {
@@ -255,7 +255,7 @@ class CategorySelectorActivity : ComponentActivity() {
                                         }) {
                                             Icon(
                                                 imageVector = Icons.Rounded.Close,
-                                                contentDescription = "category_edit_close",
+                                                contentDescription = null,
                                             )
                                         }
                                     } else {
@@ -264,7 +264,7 @@ class CategorySelectorActivity : ComponentActivity() {
                                         }) {
                                             Icon(
                                                 imageVector = Icons.Default.Edit,
-                                                contentDescription = "category_edit",
+                                                contentDescription = null,
                                             )
                                         }
                                     }
@@ -320,7 +320,7 @@ class CategorySelectorActivity : ComponentActivity() {
                                         if (isEditMode)
                                             Icon(
                                                 imageVector = Icons.Default.Settings,
-                                                contentDescription = "category_settings",
+                                                contentDescription = null,
                                                 tint = Color.Gray,
                                             )
                                     },
@@ -454,7 +454,7 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                             ) {
                                                 Icon(
                                                     imageVector = Icons.Outlined.Delete,
-                                                    contentDescription = "delete_category",
+                                                    contentDescription = null,
                                                     tint = Color(0xFFBD3131),
                                                 )
                                             }
@@ -510,7 +510,7 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Filled.ArrowBack,
-                                        contentDescription = "Back",
+                                        contentDescription = null,
                                     )
                                 }
                             },
@@ -526,7 +526,7 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                         }) {
                                             Icon(
                                                 imageVector = Icons.Default.Add,
-                                                contentDescription = "subcategory_edit_plus",
+                                                contentDescription = null,
                                             )
                                         }
                                         IconButton(onClick = {
@@ -534,7 +534,7 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                         }) {
                                             Icon(
                                                 imageVector = Icons.Rounded.Close,
-                                                contentDescription = "subcategory_edit_close",
+                                                contentDescription = null,
                                             )
                                         }
                                     } else {
@@ -543,7 +543,7 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                         }) {
                                             Icon(
                                                 imageVector = Icons.Default.Edit,
-                                                contentDescription = "subcategory_edit",
+                                                contentDescription = null,
                                             )
                                         }
                                     }
@@ -583,7 +583,7 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                         if (isEditMode)
                                             Icon(
                                                 imageVector = Icons.Default.Settings,
-                                                contentDescription = "category_settings",
+                                                contentDescription = null,
                                                 tint = Color.Gray,
                                             )
                                     },

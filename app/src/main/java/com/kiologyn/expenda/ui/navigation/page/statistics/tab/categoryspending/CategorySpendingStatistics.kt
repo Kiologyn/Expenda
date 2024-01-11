@@ -186,9 +186,10 @@ private fun CategorySpendingStatistic(
                     Icon(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(BUTTONS_PADDING),
+                            .padding(BUTTONS_PADDING)
+                        ,
                         painter = painterResource(R.drawable.arrow_left_tight),
-                        contentDescription = "piechart_back",
+                        contentDescription = null,
                         tint = ARROWS_COLOR,
                     )
                 }
@@ -210,9 +211,10 @@ private fun CategorySpendingStatistic(
                     Icon(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(BUTTONS_PADDING),
+                            .padding(BUTTONS_PADDING)
+                        ,
                         painter = painterResource(R.drawable.arrow_right_tight),
-                        contentDescription = "piechart_back",
+                        contentDescription = null,
                         tint = ARROWS_COLOR,
                     )
                 }
