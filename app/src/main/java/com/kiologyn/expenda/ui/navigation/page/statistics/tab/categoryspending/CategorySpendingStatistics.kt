@@ -84,9 +84,8 @@ private fun CategorySpendingStatistic(
 
         val localContext = LocalContext.current
         LaunchedEffect(fromDate.value, toDate.value, chosenCategory) {
-            pieData = ExpendaDatabase
-                .build(localContext)
-                .recordDao().run {
+            ExpendaDatabase.build(localContext).apply {
+                pieData = recordDao().run {
                     if (chosenCategory == null) categoriesExpenses(
                         fromDate.value.toSeconds(),
                         toDate.value.toSeconds(),
@@ -97,6 +96,7 @@ private fun CategorySpendingStatistic(
                         chosenCategory!!,
                     )
                 }.sortedBy { -it.amount }
+            }.close()
             allAmount = pieData.sumOf { item -> item.amount }
         }
 

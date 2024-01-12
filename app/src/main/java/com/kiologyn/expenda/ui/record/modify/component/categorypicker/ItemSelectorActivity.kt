@@ -82,8 +82,9 @@ class CategorySelectorActivity : ComponentActivity() {
                 var refresh by remember { mutableStateOf(true) }
                 LaunchedEffect(refresh) {
                     if (refresh) {
-                        val db = ExpendaDatabase.build(applicationContext)
-                        categories = db.categoryDao().getAll()
+                        ExpendaDatabase.build(applicationContext).apply {
+                            categories = categoryDao().getAll()
+                        }.close()
                         refresh = false
                     }
                 }
@@ -167,9 +168,9 @@ class CategorySelectorActivity : ComponentActivity() {
                                             IconButton(
                                                 onClick = {
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        ExpendaDatabase
-                                                            .build(applicationContext)
-                                                            .categoryDao().delete(chosenCategory!!.name)
+                                                        ExpendaDatabase.build(applicationContext).apply {
+                                                            categoryDao().delete(chosenCategory!!.name)
+                                                        }.close()
                                                     }.invokeOnCompletion {
                                                         openModifyDialog = false
                                                         refresh = true
@@ -192,17 +193,18 @@ class CategorySelectorActivity : ComponentActivity() {
                                     TextButton(onClick = {
                                         if (textInputValue.isEmpty()) return@TextButton
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            ExpendaDatabase
-                                                .build(applicationContext)
-                                                .categoryDao().run {
+                                            ExpendaDatabase.build(applicationContext).apply {
+                                                val categoryName = textInputValue.trim(' ', '\n')
+                                                categoryDao().run {
                                                     if (chosenCategory == null)
-                                                        create(textInputValue)
+                                                        create(categoryName)
                                                     else
                                                         rename(
                                                             chosenCategory!!.name,
-                                                            textInputValue,
+                                                            categoryName,
                                                         )
                                                 }
+                                            }.close()
                                         }.invokeOnCompletion {
                                             openModifyDialog = false
                                             refresh = true
@@ -353,11 +355,12 @@ class SubcategorySelectorActivity : ComponentActivity() {
                 var refresh by remember { mutableStateOf(true) }
                 LaunchedEffect(refresh) {
                     if (refresh) {
-                        val db = ExpendaDatabase.build(applicationContext)
                         val categoryId = intent.getIntExtra(RECEIVED_ID_EXTRA_NAME, -1)
                         if (categoryId != -1) {
-                            category = db.categoryDao().getById(categoryId)
-                            subcategories = db.subcategoryDao().getAllByCategoryId(categoryId)
+                            ExpendaDatabase.build(applicationContext).apply {
+                                category = categoryDao().getById(categoryId)
+                                subcategories = subcategoryDao().getAllByCategoryId(categoryId)
+                            }.close()
                         }
                         refresh = false
                     }
@@ -442,10 +445,9 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                             IconButton(
                                                 onClick = {
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        ExpendaDatabase
-                                                            .build(applicationContext)
-                                                            .subcategoryDao()
-                                                            .delete(chosenSubcategory!!.name)
+                                                        ExpendaDatabase.build(applicationContext).apply {
+                                                            subcategoryDao().delete(chosenSubcategory!!.name)
+                                                        }.close()
                                                     }.invokeOnCompletion {
                                                         openModifyDialog = false
                                                         refresh = true
@@ -468,20 +470,21 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                     TextButton(onClick = {
                                         if (textInputValue.isEmpty()) return@TextButton
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            ExpendaDatabase
-                                                .build(applicationContext)
-                                                .subcategoryDao().run {
+                                            ExpendaDatabase.build(applicationContext).apply {
+                                                val categoryName = textInputValue.trim(' ', '\n')
+                                                subcategoryDao().run {
                                                     if (chosenSubcategory == null)
                                                         create(
                                                             category!!.name,
-                                                            textInputValue,
+                                                            categoryName,
                                                         )
                                                     else
                                                         rename(
                                                             chosenSubcategory!!.name,
-                                                            textInputValue,
+                                                            categoryName,
                                                         )
                                                 }
+                                            }.close()
                                         }.invokeOnCompletion {
                                             openModifyDialog = false
                                             refresh = true

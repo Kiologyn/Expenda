@@ -59,16 +59,15 @@ private fun IncomeExpenseDifference(
         var income by remember { mutableDoubleStateOf(0.0) }
         var expense by remember { mutableDoubleStateOf(0.0) }
         LaunchedEffect(fromDate.value, toDate.value) {
-            ExpendaDatabase
-                .build(localContext)
-                .recordDao()
-                .cashFlow(
+            ExpendaDatabase.build(localContext).apply {
+                recordDao().cashFlow(
                     fromDate.value.toSeconds(),
                     toDate.value.toSeconds(),
                 ).run {
                     income = this.income
                     expense = this.expense
                 }
+            }.close()
         }
         val difference by remember(income, expense) { mutableDoubleStateOf(income - expense) }
 

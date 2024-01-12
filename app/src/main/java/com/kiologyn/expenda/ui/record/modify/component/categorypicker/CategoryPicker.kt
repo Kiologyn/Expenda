@@ -53,12 +53,11 @@ fun CategoryPicker(
                 -1,
             )
             CoroutineScope(Dispatchers.IO).launch {
-                subcategoryState.value = ExpendaDatabase
-                    .build(localContext)
-                    .subcategoryDao()
-                    .getById(
+                ExpendaDatabase.build(localContext).apply {
+                    subcategoryState.value = subcategoryDao().getById(
                         subcategoryId ?: subcategoryState.value?.id ?: -1
                     )
+                }.close()
             }
         }
     }

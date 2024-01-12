@@ -113,12 +113,12 @@ class EditActivity : ComponentActivity() {
     private fun Content(padding: PaddingValues) {
         record = remember { mutableStateOf(null) }
         LaunchedEffect(true) {
-            record.value = ExpendaDatabase
-                .build(applicationContext)
-                .recordDao()
-                .getByIdWithSubcategory(recordId)
+            ExpendaDatabase.build(applicationContext).apply {
+                record.value = recordDao().getByIdWithSubcategory(recordId)
+            }.close()
             if (record.value == null) finish()
         }
+
         if (record.value == null)
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -261,14 +261,13 @@ class EditActivity : ComponentActivity() {
                                     id = record.value!!.id,
                                     datetime = dateTimeState.value.toSeconds(),
                                     amount = (if (isIncomeState.value) 1 else -1) * amountState.value!!,
-                                    description = descriptionState.value,
+                                    description = descriptionState.value.trim(' ', '\n'),
                                     idSubcategory = subcategoryState.value!!.id
                                 )
                                 coroutineScope.launch {
-                                    ExpendaDatabase
-                                        .build(applicationContext)
-                                        .recordDao()
-                                        .upsert(record)
+                                    ExpendaDatabase.build(applicationContext).apply {
+                                        recordDao().upsert(record)
+                                    }.close()
                                 }.invokeOnCompletion {
                                     finish()
                                 }

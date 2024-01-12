@@ -124,13 +124,13 @@ class AddActivity : ComponentActivity() {
                                 val record = Record(
                                     datetime = dateTimeState.value.toSeconds(),
                                     amount = (if (isIncomeState.value) 1 else -1) * amountState.value!!,
-                                    description = descriptionState.value,
+                                    description = descriptionState.value.trim(' ', '\n'),
                                     idSubcategory = subcategoryState.value!!.id
                                 )
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    val db = ExpendaDatabase.build(applicationContext)
-                                    db.recordDao().insert(record)
-
+                                    ExpendaDatabase.build(applicationContext).apply {
+                                        recordDao().insert(record)
+                                    }.close()
                                 }.invokeOnCompletion {
                                     CoroutineScope(Dispatchers.Main).launch {
                                         finish()

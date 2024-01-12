@@ -82,10 +82,9 @@ class RecordsActivity : ComponentActivity() {
             LaunchedEffect(refreshRecords.value) {
                 if (refreshRecords.value) {
                     recordsIds.value = emptyList()
-                    recordsIds.value = ExpendaDatabase
-                        .build(applicationContext)
-                        .recordDao()
-                        .getAllIdsDESC()
+                    ExpendaDatabase.build(applicationContext).apply {
+                        recordsIds.value = recordDao().getAllIdsDESC()
+                    }.close()
                     refreshRecords.value = false
                 }
             }
@@ -169,24 +168,23 @@ class RecordsActivity : ComponentActivity() {
                             confirmButton = {
                                 TextButton(onClick = {
                                     coroutineScope.launch {
-                                        val selectedDailyRecordIndex = recordsIds.value.indexOf(
-                                            ExpendaDatabase
-                                                .build(applicationContext)
-                                                .recordDao()
-                                                .getIdOfDailyLast(
+                                        ExpendaDatabase.build(applicationContext).apply {
+                                            val selectedDailyRecordIndex = recordsIds.value.indexOf(
+                                                recordDao().getIdOfDailyLast(
                                                     datePickerState.selectedDateMillis?.div(1000) ?: 0
                                                 )
-                                        )
-                                        if (selectedDailyRecordIndex >= 0)
-                                            lazyColumnState.scrollToItem(
-                                                selectedDailyRecordIndex
                                             )
-                                        else
-                                            Toast.makeText(
-                                                applicationContext,
-                                                "not found",
-                                                Toast.LENGTH_SHORT,
-                                            ).show()
+                                            if (selectedDailyRecordIndex >= 0)
+                                                lazyColumnState.scrollToItem(
+                                                    selectedDailyRecordIndex
+                                                )
+                                            else
+                                                Toast.makeText(
+                                                    applicationContext,
+                                                    "not found",
+                                                    Toast.LENGTH_SHORT,
+                                                ).show()
+                                        }.close()
 
                                         openDialog = false
                                     }
@@ -246,10 +244,11 @@ class RecordsActivity : ComponentActivity() {
                             mutableStateOf<RecordWithSubcategoryNameWithDailyFirstFlag?>(null)
                         }
                         LaunchedEffect(true) {
-                            record = ExpendaDatabase
-                                .build(applicationContext)
-                                .recordDao()
-                                .getByIdWithSubcategoryAndDailyFirstFlag(recordId)
+                            ExpendaDatabase.build(applicationContext).apply {
+                                record = recordDao().getByIdWithSubcategoryAndDailyFirstFlag(
+                                    recordId,
+                                )
+                            }.close()
                         }
 
                         if (record?.isDailyFirst == true)

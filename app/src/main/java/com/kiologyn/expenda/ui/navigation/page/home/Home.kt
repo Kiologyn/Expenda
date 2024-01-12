@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -101,10 +100,9 @@ private fun BalanceView(
     LaunchedEffect(refreshBalance) {
         if (refreshBalance) {
             balanceValue = null
-            balanceValue = ExpendaDatabase
-                .build(localContext)
-                .recordDao()
-                .getBalance()
+            ExpendaDatabase.build(localContext).apply {
+                balanceValue = recordDao().getBalance()
+            }.close()
             refreshBalance = false
         }
     }
@@ -147,13 +145,12 @@ private fun RecordList(
     LaunchedEffect(refresh) {
         if (refresh) {
             recordsList = emptyList()
-            recordsList = ExpendaDatabase
-                .build(localContext)
-                .recordDao()
-                .getAllWithSubcategoryNamesWithOffsetDESC(
+            ExpendaDatabase.build(localContext).apply {
+                recordsList = recordDao().getAllWithSubcategoryNamesWithOffsetDESC(
                     offset = 0,
                     quantity = Helper.HOME_SCREEN_RECORDS_AMOUNT,
                 )
+            }.close()
             refresh = false
         }
     }

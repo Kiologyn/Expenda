@@ -50,15 +50,15 @@ class ExpendaApp : Application() {
 
         if (!isDefaultCategoriesAdded())
             CoroutineScope(Dispatchers.IO).launch {
-                val db = ExpendaDatabase.build(applicationContext)
-                val subcategoryDao = db.subcategoryDao()
-                val categoryDao = db.categoryDao()
-
-                for ((categoryName, subcategories) in DEFAULT_CATEGORIES) {
-                    categoryDao.create(categoryName)
-                    for (subcategoryName in subcategories)
-                        subcategoryDao.create(categoryName, subcategoryName)
-                }
+                ExpendaDatabase.build(applicationContext).apply {
+                    val subcategoryDao = subcategoryDao()
+                    val categoryDao = categoryDao()
+                    for ((categoryName, subcategories) in DEFAULT_CATEGORIES) {
+                        categoryDao.create(categoryName)
+                        for (subcategoryName in subcategories)
+                            subcategoryDao.create(categoryName, subcategoryName)
+                    }
+                }.close()
 
                 setIsDefaultCategoriesAddedTrue()
             }
