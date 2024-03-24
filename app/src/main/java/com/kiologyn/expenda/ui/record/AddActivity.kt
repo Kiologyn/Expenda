@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kiologyn.expenda.database.ExpendaDatabase
+import com.kiologyn.expenda.ExpendaApp
 import com.kiologyn.expenda.database.table.record.Record
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
@@ -128,9 +128,9 @@ class AddActivity : ComponentActivity() {
                                     idSubcategory = subcategoryState.value!!.id
                                 )
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    ExpendaDatabase.build(applicationContext).apply {
+                                    ExpendaApp.database.apply {
                                         recordDao().insert(record)
-                                    }.close()
+                                    }
                                 }.invokeOnCompletion {
                                     CoroutineScope(Dispatchers.Main).launch {
                                         finish()

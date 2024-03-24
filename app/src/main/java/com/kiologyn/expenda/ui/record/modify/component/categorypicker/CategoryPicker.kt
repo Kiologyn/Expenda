@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.kiologyn.expenda.database.ExpendaDatabase
+import com.kiologyn.expenda.ExpendaApp
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,11 +53,11 @@ fun CategoryPicker(
                 -1,
             )
             CoroutineScope(Dispatchers.IO).launch {
-                ExpendaDatabase.build(localContext).apply {
+                ExpendaApp.database.apply {
                     subcategoryState.value = subcategoryDao().getById(
                         subcategoryId ?: subcategoryState.value?.id ?: -1
                     )
-                }.close()
+                }
             }
         }
     }

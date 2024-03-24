@@ -52,7 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kiologyn.expenda.database.ExpendaDatabase
+import com.kiologyn.expenda.ExpendaApp
 import com.kiologyn.expenda.database.table.record.RecordWithSubcategoryNameWithDailyFirstFlag
 import com.kiologyn.expenda.formatDateDMY
 import com.kiologyn.expenda.toLocalDateTime
@@ -82,9 +82,9 @@ class RecordsActivity : ComponentActivity() {
             LaunchedEffect(refreshRecords.value) {
                 if (refreshRecords.value) {
                     recordsIds.value = emptyList()
-                    ExpendaDatabase.build(applicationContext).apply {
+                    ExpendaApp.database.apply {
                         recordsIds.value = recordDao().getAllIdsDESC()
-                    }.close()
+                    }
                     refreshRecords.value = false
                 }
             }
@@ -168,7 +168,7 @@ class RecordsActivity : ComponentActivity() {
                             confirmButton = {
                                 TextButton(onClick = {
                                     coroutineScope.launch {
-                                        ExpendaDatabase.build(applicationContext).apply {
+                                        ExpendaApp.database.apply {
                                             val selectedDailyRecordIndex = recordsIds.value.indexOf(
                                                 recordDao().getIdOfDailyLast(
                                                     datePickerState.selectedDateMillis?.div(1000) ?: 0
@@ -184,7 +184,7 @@ class RecordsActivity : ComponentActivity() {
                                                     "not found",
                                                     Toast.LENGTH_SHORT,
                                                 ).show()
-                                        }.close()
+                                        }
 
                                         openDialog = false
                                     }
@@ -244,11 +244,11 @@ class RecordsActivity : ComponentActivity() {
                             mutableStateOf<RecordWithSubcategoryNameWithDailyFirstFlag?>(null)
                         }
                         LaunchedEffect(true) {
-                            ExpendaDatabase.build(applicationContext).apply {
+                            ExpendaApp.database.apply {
                                 record = recordDao().getByIdWithSubcategoryAndDailyFirstFlag(
                                     recordId,
                                 )
-                            }.close()
+                            }
                         }
 
                         if (record?.isDailyFirst == true)

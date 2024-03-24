@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.kiologyn.expenda.database.ExpendaDatabase
+import com.kiologyn.expenda.ExpendaApp
 import com.kiologyn.expenda.database.table.record.Record
 import com.kiologyn.expenda.database.table.record.RecordWithSubcategory
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
@@ -113,9 +113,9 @@ class EditActivity : ComponentActivity() {
     private fun Content(padding: PaddingValues) {
         record = remember { mutableStateOf(null) }
         LaunchedEffect(true) {
-            ExpendaDatabase.build(applicationContext).apply {
+            ExpendaApp.database.apply {
                 record.value = recordDao().getByIdWithSubcategory(recordId)
-            }.close()
+            }
             if (record.value == null) finish()
         }
 
@@ -212,10 +212,9 @@ class EditActivity : ComponentActivity() {
                                         }
                                         TextButton(onClick = {
                                             coroutineScope.launch {
-                                                ExpendaDatabase
-                                                    .build(applicationContext)
-                                                    .recordDao()
-                                                    .deleteById(record.value!!.id)
+                                                ExpendaApp.database.apply {
+                                                    recordDao().deleteById(record.value!!.id)
+                                                }
                                             }.invokeOnCompletion {
                                                 finish()
                                             }
@@ -265,9 +264,9 @@ class EditActivity : ComponentActivity() {
                                     idSubcategory = subcategoryState.value!!.id
                                 )
                                 coroutineScope.launch {
-                                    ExpendaDatabase.build(applicationContext).apply {
+                                    ExpendaApp.database.apply {
                                         recordDao().upsert(record)
-                                    }.close()
+                                    }
                                 }.invokeOnCompletion {
                                     finish()
                                 }

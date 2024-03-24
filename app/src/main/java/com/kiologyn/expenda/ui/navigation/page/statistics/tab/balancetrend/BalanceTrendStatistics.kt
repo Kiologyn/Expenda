@@ -12,7 +12,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -21,7 +20,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.kiologyn.expenda.database.ExpendaDatabase
+import com.kiologyn.expenda.ExpendaApp
 import com.kiologyn.expenda.database.table.record.DailyBalanceRecord
 import com.kiologyn.expenda.formatDateMY
 import com.kiologyn.expenda.toLocalDateTime
@@ -45,7 +44,6 @@ private fun DailyBalanceTrend(
     fromDate: MutableState<LocalDateTime>,
     toDate: MutableState<LocalDateTime>,
 ) {
-    val localContext = LocalContext.current
     val ANIMATION_DURATION = 400
 
     StatisticContainer(title = "Daily balance trend") {
@@ -54,12 +52,12 @@ private fun DailyBalanceTrend(
         )) }
 
         LaunchedEffect(fromDate.value, toDate.value) {
-            ExpendaDatabase.build(localContext).apply {
+            ExpendaApp.database.apply {
                 points = recordDao().dailyBalanceRecordPerPeriod(
                     fromDate.value.toSeconds(),
                     toDate.value.toSeconds(),
                 )
-            }.close()
+            }
         }
 
         AndroidView(

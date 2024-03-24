@@ -24,9 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.kiologyn.expenda.database.ExpendaDatabase
+import com.kiologyn.expenda.ExpendaApp
 import com.kiologyn.expenda.round
 import com.kiologyn.expenda.toSeconds
 import com.kiologyn.expenda.ui.navigation.page.statistics.StatisticContainer
@@ -52,14 +51,13 @@ private fun IncomeExpenseDifference(
     fromDate: MutableState<LocalDateTime>,
     toDate: MutableState<LocalDateTime>,
 ) {
-    val localContext = LocalContext.current
     val ANIMATION_DURATION = 300
 
     StatisticContainer(title = "Cash flow") {
         var income by remember { mutableDoubleStateOf(0.0) }
         var expense by remember { mutableDoubleStateOf(0.0) }
         LaunchedEffect(fromDate.value, toDate.value) {
-            ExpendaDatabase.build(localContext).apply {
+            ExpendaApp.database.apply {
                 recordDao().cashFlow(
                     fromDate.value.toSeconds(),
                     toDate.value.toSeconds(),
@@ -67,7 +65,7 @@ private fun IncomeExpenseDifference(
                     income = this.income
                     expense = this.expense
                 }
-            }.close()
+            }
         }
         val difference by remember(income, expense) { mutableDoubleStateOf(income - expense) }
 

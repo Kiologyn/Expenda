@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,9 +43,9 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.kiologyn.expenda.ExpendaApp
 import com.kiologyn.expenda.Helper
 import com.kiologyn.expenda.R
-import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.CategoryExpense
 import com.kiologyn.expenda.toSeconds
 import com.kiologyn.expenda.ui.navigation.page.statistics.StatisticContainer
@@ -82,9 +81,8 @@ private fun CategorySpendingStatistic(
         var selectedCategory by remember { mutableStateOf<String?>(null) }
         var chosenCategory by remember { mutableStateOf<String?>(null) }
 
-        val localContext = LocalContext.current
         LaunchedEffect(fromDate.value, toDate.value, chosenCategory) {
-            ExpendaDatabase.build(localContext).apply {
+            ExpendaApp.database.apply {
                 pieData = recordDao().run {
                     if (chosenCategory == null) categoriesExpenses(
                         fromDate.value.toSeconds(),
@@ -96,7 +94,7 @@ private fun CategorySpendingStatistic(
                         chosenCategory!!,
                     )
                 }.sortedBy { -it.amount }
-            }.close()
+            }
             allAmount = pieData.sumOf { item -> item.amount }
         }
 
@@ -220,7 +218,7 @@ private fun CategorySpendingStatistic(
                 }
         }
 
-        if (!pieData.isEmpty())
+        if (pieData.isNotEmpty())
             Divider(color = Color(0xFF333333))
 
         Column(

@@ -44,8 +44,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kiologyn.expenda.ExpendaApp
 import com.kiologyn.expenda.Helper
-import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.record.RecordWithSubcategoryName
 import com.kiologyn.expenda.toLocalDateTime
 import com.kiologyn.expenda.ui.record.AddActivity
@@ -95,14 +95,13 @@ private fun BalanceView(
 ) {
     var balanceValue by remember { mutableStateOf<Double?>(null) }
 
-    val localContext = LocalContext.current
     var refreshBalance by remember { mutableStateOf(true) }
     LaunchedEffect(refreshBalance) {
         if (refreshBalance) {
             balanceValue = null
-            ExpendaDatabase.build(localContext).apply {
+            ExpendaApp.database.apply {
                 balanceValue = recordDao().getBalance()
-            }.close()
+            }
             refreshBalance = false
         }
     }
@@ -145,12 +144,12 @@ private fun RecordList(
     LaunchedEffect(refresh) {
         if (refresh) {
             recordsList = emptyList()
-            ExpendaDatabase.build(localContext).apply {
+            ExpendaApp.database.apply {
                 recordsList = recordDao().getAllWithSubcategoryNamesWithOffsetDESC(
                     offset = 0,
                     quantity = Helper.HOME_SCREEN_RECORDS_AMOUNT,
                 )
-            }.close()
+            }
             refresh = false
         }
     }

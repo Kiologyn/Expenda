@@ -54,8 +54,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.kiologyn.expenda.ExpendaApp
 import com.kiologyn.expenda.Helper
-import com.kiologyn.expenda.database.ExpendaDatabase
 import com.kiologyn.expenda.database.table.category.Category
 import com.kiologyn.expenda.database.table.subcategory.Subcategory
 import com.kiologyn.expenda.ui.theme.Black40
@@ -82,9 +82,9 @@ class CategorySelectorActivity : ComponentActivity() {
                 var refresh by remember { mutableStateOf(true) }
                 LaunchedEffect(refresh) {
                     if (refresh) {
-                        ExpendaDatabase.build(applicationContext).apply {
+                        ExpendaApp.database.apply {
                             categories = categoryDao().getAll()
-                        }.close()
+                        }
                         refresh = false
                     }
                 }
@@ -168,9 +168,9 @@ class CategorySelectorActivity : ComponentActivity() {
                                             IconButton(
                                                 onClick = {
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        ExpendaDatabase.build(applicationContext).apply {
+                                                        ExpendaApp.database.apply {
                                                             categoryDao().delete(chosenCategory!!.name)
-                                                        }.close()
+                                                        }
                                                     }.invokeOnCompletion {
                                                         openModifyDialog = false
                                                         refresh = true
@@ -193,7 +193,7 @@ class CategorySelectorActivity : ComponentActivity() {
                                     TextButton(onClick = {
                                         if (textInputValue.isEmpty()) return@TextButton
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            ExpendaDatabase.build(applicationContext).apply {
+                                            ExpendaApp.database.apply {
                                                 val categoryName = textInputValue.trim(' ', '\n')
                                                 categoryDao().run {
                                                     if (chosenCategory == null)
@@ -204,7 +204,7 @@ class CategorySelectorActivity : ComponentActivity() {
                                                             categoryName,
                                                         )
                                                 }
-                                            }.close()
+                                            }
                                         }.invokeOnCompletion {
                                             openModifyDialog = false
                                             refresh = true
@@ -357,10 +357,10 @@ class SubcategorySelectorActivity : ComponentActivity() {
                     if (refresh) {
                         val categoryId = intent.getIntExtra(RECEIVED_ID_EXTRA_NAME, -1)
                         if (categoryId != -1) {
-                            ExpendaDatabase.build(applicationContext).apply {
+                            ExpendaApp.database.apply {
                                 category = categoryDao().getById(categoryId)
                                 subcategories = subcategoryDao().getAllByCategoryId(categoryId)
-                            }.close()
+                            }
                         }
                         refresh = false
                     }
@@ -445,9 +445,9 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                             IconButton(
                                                 onClick = {
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        ExpendaDatabase.build(applicationContext).apply {
+                                                        ExpendaApp.database.apply {
                                                             subcategoryDao().delete(chosenSubcategory!!.name)
-                                                        }.close()
+                                                        }
                                                     }.invokeOnCompletion {
                                                         openModifyDialog = false
                                                         refresh = true
@@ -470,7 +470,7 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                     TextButton(onClick = {
                                         if (textInputValue.isEmpty()) return@TextButton
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            ExpendaDatabase.build(applicationContext).apply {
+                                            ExpendaApp.database.apply {
                                                 val categoryName = textInputValue.trim(' ', '\n')
                                                 subcategoryDao().run {
                                                     if (chosenSubcategory == null)
@@ -484,7 +484,7 @@ class SubcategorySelectorActivity : ComponentActivity() {
                                                             categoryName,
                                                         )
                                                 }
-                                            }.close()
+                                            }
                                         }.invokeOnCompletion {
                                             openModifyDialog = false
                                             refresh = true

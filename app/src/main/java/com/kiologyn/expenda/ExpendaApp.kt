@@ -43,14 +43,20 @@ class ExpendaApp : Application() {
 
     lateinit var sharedPreferences: SharedPreferences
 
+    companion object {
+        lateinit var database: ExpendaDatabase
+    }
+
     override fun onCreate() {
         super.onCreate()
 
         sharedPreferences = applicationContext.getSharedPreferences(Helper.SHARED_PREFERENCES_SETTINGS_NAME, Context.MODE_PRIVATE)
 
+        database = ExpendaDatabase.build(applicationContext)
+
         if (!isDefaultCategoriesAdded())
             CoroutineScope(Dispatchers.IO).launch {
-                ExpendaDatabase.build(applicationContext).apply {
+                database.apply {
                     val subcategoryDao = subcategoryDao()
                     val categoryDao = categoryDao()
                     for ((categoryName, subcategories) in DEFAULT_CATEGORIES) {
@@ -58,7 +64,7 @@ class ExpendaApp : Application() {
                         for (subcategoryName in subcategories)
                             subcategoryDao.create(categoryName, subcategoryName)
                     }
-                }.close()
+                }
 
                 setIsDefaultCategoriesAddedTrue()
             }
