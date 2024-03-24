@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kiologyn.expenda.formatDate
+import com.kiologyn.expenda.formatDateMY
 import com.kiologyn.expenda.toLocalDateTime
 import com.kiologyn.expenda.toSeconds
 import com.kiologyn.expenda.ui.theme.ExpendaTheme
@@ -65,9 +66,7 @@ import com.kiologyn.expenda.ui.theme.LocalExpendaColors
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
-import java.util.Locale
 
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -79,12 +78,12 @@ fun DatePeriodSelectorContainer(
 ) {
     val PAGES_COUNT = 2
     val INITIAL_PAGE_INDEX = 0
-    val CONTAINER_BORDER_RADUIS = height/3
-    val CONTAINER_SHAPE = RoundedCornerShape(CONTAINER_BORDER_RADUIS, CONTAINER_BORDER_RADUIS)
+    val CONTAINER_BORDER_RADIUS = height/3
+    val CONTAINER_SHAPE = RoundedCornerShape(CONTAINER_BORDER_RADIUS, CONTAINER_BORDER_RADIUS)
 
     val pagerState = rememberPagerState(initialPage = INITIAL_PAGE_INDEX) { PAGES_COUNT }
     val selectedPageIndex by remember(pagerState.currentPage) { mutableIntStateOf(pagerState.currentPage) }
-    var selectedTimeUnit by remember { mutableStateOf(DropdownMenuEnum.WEEK) }
+    var selectedTimeUnit by remember { mutableStateOf(DateRangeEnum.WEEK) }
     val datePeriodsStates: List<Map<String, MutableState<LocalDateTime>>> = listOf(
         mapOf(
             "from" to remember { mutableStateOf(LocalDateTime.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))) },
@@ -123,7 +122,7 @@ fun DatePeriodSelectorContainer(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(height * (1-CONTENT_PERCENT)/2)
+                .padding(height * (1 - CONTENT_PERCENT) / 2)
             ,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(SPACE_HEIGHT),
@@ -132,7 +131,7 @@ fun DatePeriodSelectorContainer(
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(CONTENT_HEIGHT/2))
+                    .clip(RoundedCornerShape(CONTENT_HEIGHT / 2))
                 ,
             ) {pageIndex ->
                 val modifier = Modifier.fillMaxHeight()
@@ -150,53 +149,33 @@ fun DatePeriodSelectorContainer(
 
                         LaunchedEffect(selectedTimeUnit) {
                             if (pageIndex != pagerState.settledPage) return@LaunchedEffect
-                            val localDateTimeNow = LocalDateTime.now()
-                            when (selectedTimeUnit) {
-                                DropdownMenuEnum.WEEK -> {
-                                    localFromDate = localDateTimeNow.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-                                    localToDate = localDateTimeNow.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-                                }
-                                DropdownMenuEnum.MONTH -> {
-                                    localFromDate = localDateTimeNow.with(TemporalAdjusters.firstDayOfMonth())
-                                    localToDate = localDateTimeNow.with(TemporalAdjusters.lastDayOfMonth())
-                                }
-                                DropdownMenuEnum.YEAR -> {
-                                    localFromDate = localDateTimeNow.with(TemporalAdjusters.firstDayOfYear())
-                                    localToDate = localDateTimeNow.with(TemporalAdjusters.lastDayOfYear())
-                                }
+
+                            LocalDateTime.now().let {
+                                localFromDate = it.with(selectedTimeUnit.temporalAdjusterToBeginning)
+                                localToDate = it.with(selectedTimeUnit.temporalAdjusterToEnd)
                             }
                         }
 
                         val labelText by remember(localFromDate, localToDate) { mutableStateOf(
                             if (
                                 localFromDate.toLocalDate().compareTo(
-                                    LocalDate.now().with( when (selectedTimeUnit) {
-                                        DropdownMenuEnum.WEEK -> TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)
-                                        DropdownMenuEnum.MONTH -> TemporalAdjusters.firstDayOfMonth()
-                                        DropdownMenuEnum.YEAR -> TemporalAdjusters.firstDayOfYear()
-                                    } )
+                                    LocalDate.now().with(selectedTimeUnit.temporalAdjusterToBeginning)
                                 ) == 0
                             ) selectedTimeUnit.display
                             else when (selectedTimeUnit) {
-                                DropdownMenuEnum.WEEK -> "${localFromDate.formatDate()} - ${localToDate.formatDate()}"
-                                DropdownMenuEnum.MONTH -> "${localFromDate.month.getDisplayName(java.time.format.TextStyle.FULL, Locale.getDefault())} ${localFromDate.year}"
-                                DropdownMenuEnum.YEAR -> "${localFromDate.year}"
+                                DateRangeEnum.WEEK -> "${localFromDate.formatDate()} - ${localToDate.formatDate()}"
+                                DateRangeEnum.MONTH -> localFromDate.formatDateMY()
+                                DateRangeEnum.YEAR -> localFromDate.year.toString()
                             }
                         ) }
 
                         val shiftDates: (Boolean) -> Unit = { isForward ->
-                            val adjuster = when (selectedTimeUnit) {
-                                DropdownMenuEnum.WEEK -> ChronoUnit.WEEKS
-                                DropdownMenuEnum.MONTH -> ChronoUnit.MONTHS
-                                DropdownMenuEnum.YEAR -> ChronoUnit.YEARS
-                            }
-
-                            localFromDate = if (isForward) localFromDate.plus(1, adjuster) else localFromDate.minus(1, adjuster)
-                            localToDate = if (isForward) localToDate.plus(1, adjuster) else localToDate.minus(1, adjuster)
+                            localFromDate = localFromDate.plus(if (isForward) 1 else -1, selectedTimeUnit.chronoUnit)
+                            localToDate = localToDate.plus(if (isForward) 1 else -1, selectedTimeUnit.chronoUnit)
 
                             localToDate = localToDate.run { when (selectedTimeUnit) {
-                                DropdownMenuEnum.MONTH -> with(TemporalAdjusters.lastDayOfMonth())
-                                DropdownMenuEnum.YEAR -> with(TemporalAdjusters.lastDayOfYear())
+                                DateRangeEnum.MONTH -> with(TemporalAdjusters.lastDayOfMonth())
+                                DateRangeEnum.YEAR -> with(TemporalAdjusters.lastDayOfYear())
                                 else -> this
                             } }
                         }
@@ -235,7 +214,7 @@ fun DatePeriodSelectorContainer(
                                     expanded = menuOpened,
                                     onDismissRequest = { menuOpened = false },
                                 ) {
-                                    DropdownMenuEnum.entries.forEach { item ->
+                                    DateRangeEnum.entries.forEach { item ->
                                         DropdownMenuItem(
                                             text = {
                                                 Text(
