@@ -53,7 +53,7 @@ private val pages: List<PageItem> = listOf(
         { Statistics() },
     ),
 )
-const val START_PAGE_INDEX = 0
+private const val START_PAGE_INDEX = 0
 
 @Composable
 fun Navigation() {
@@ -85,7 +85,6 @@ fun Navigation() {
                                 navController.navigate(page.name)
                             }
                         },
-                        alwaysShowLabel = false,
                     )
                 }
             }

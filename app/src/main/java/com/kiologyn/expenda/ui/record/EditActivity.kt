@@ -219,7 +219,7 @@ class EditActivity : ComponentActivity() {
                                                 finish()
                                             }
                                         }) {
-                                            Text("OK")
+                                            Text("Yes")
                                         }
                                     }
                                 }
