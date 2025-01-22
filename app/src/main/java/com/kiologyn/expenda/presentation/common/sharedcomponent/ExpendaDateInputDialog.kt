@@ -7,6 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.utils.toLocalDate
 import com.kiologyn.expenda.utils.toSeconds
 import java.time.LocalDate
@@ -33,12 +35,12 @@ fun ExpendaDateInputDialog(
                         this.div(1000L).toLocalDate()
                     })
                 }) {
-                    Text("OK")
+                    Text(stringResource(R.string.dialog__ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = onDismiss) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.dialog__cancel))
                 }
             },
         ) {

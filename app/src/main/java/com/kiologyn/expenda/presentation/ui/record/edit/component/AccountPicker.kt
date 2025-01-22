@@ -26,9 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
 import com.kiologyn.expenda.data.db.entity.Account
 
@@ -54,13 +56,13 @@ fun AccountPicker(
         contentAlignment = Alignment.Center,
     ) {
         AnimatedContent(
-            targetState = accountText ?: "Choose an account",
+            targetState = accountText ?: stringResource(R.string.record_edit__account_picker_placeholder),
             transitionSpec = {
                 val duration = 300 // ms
                 fadeIn(tween(duration)) togetherWith fadeOut(tween(duration))
             },
             contentAlignment = Alignment.Center,
-            label = "choose account's animation",
+            label = "account",
         ) { text ->
             Text(
                 modifier = Modifier.fillMaxWidth(),

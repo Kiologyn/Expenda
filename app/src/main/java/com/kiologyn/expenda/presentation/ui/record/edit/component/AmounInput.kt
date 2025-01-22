@@ -15,8 +15,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.utils.Helper
 import com.kiologyn.expenda.presentation.theme.Black40
 
@@ -44,7 +46,7 @@ fun AmountInput(
         },
         singleLine = true,
         modifier = modifier,
-        placeholder = { Text("Amount", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+        placeholder = { Text(stringResource(R.string.record_edit__amount_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant) },
         shape = RoundedCornerShape(10.dp),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         colors = TextFieldDefaults.colors(

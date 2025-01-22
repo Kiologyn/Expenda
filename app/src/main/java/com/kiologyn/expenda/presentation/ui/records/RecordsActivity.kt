@@ -30,10 +30,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
 import com.kiologyn.expenda.utils.Helper
 import com.kiologyn.expenda.data.db.dao.RecordWithSubcategoryNameWithDailyFirstFlag
@@ -51,7 +53,8 @@ import kotlinx.coroutines.launch
 
 
 class RecordsActivity : ExpendaTopBarActivity() {
-    override val title = "Records"
+    override val title: String
+        get() = getString(R.string.records__title)
     override val actions: @Composable (RowScope.() -> Unit) = {
         if (recordsIdsState.value.isNotEmpty()) {
             var dialogOpened by remember { mutableStateOf(false) }
@@ -151,7 +154,7 @@ class RecordsActivity : ExpendaTopBarActivity() {
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        "Empty",
+                        stringResource(R.string.records__empty_list),
                         color = Color.Gray,
                         fontSize = 20.sp,
                     )

@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -55,7 +56,7 @@ fun DailyBalanceTrend(dateRange: ClosedRange<LocalDate>) {
 
     val viewModel: DailyBalanceTrendViewModel = viewModel()
 
-    StatisticContainer(title = "Daily balance trend") {
+    StatisticContainer(title = stringResource(R.string.statistics__balance__daily_balance_trend__title)) {
         LaunchedEffect(Unit) {
             viewModel.retrieveData(dateRange)
         }

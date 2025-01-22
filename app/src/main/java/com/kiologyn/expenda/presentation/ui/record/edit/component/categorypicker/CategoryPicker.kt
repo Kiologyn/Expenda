@@ -26,8 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
 import com.kiologyn.expenda.data.db.entity.Subcategory
 import kotlinx.coroutines.CoroutineScope
@@ -71,7 +73,7 @@ fun CategoryPicker(
         contentAlignment = Alignment.Center,
     ) {
         AnimatedContent(
-            targetState = categoryText ?: "Choose a category",
+            targetState = categoryText ?: stringResource(R.string.record_edit__category_picker__placeholder),
             transitionSpec = {
                 val duration = 300 // ms
                 fadeIn(tween(duration)) togetherWith fadeOut(tween(duration))

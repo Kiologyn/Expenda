@@ -46,9 +46,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
 import com.kiologyn.expenda.utils.Helper
 import com.kiologyn.expenda.data.db.entity.Account
@@ -236,7 +238,7 @@ private fun RecordList(
             ,
             contentAlignment = Alignment.Center,
         ) {
-            Text(text = "See All Records")
+            Text(text = stringResource(R.string.home__see_all_records))
         }
 
         HorizontalDivider(
@@ -262,7 +264,7 @@ private fun RecordList(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        "Empty",
+                        stringResource(R.string.home__records__empty_list),
                         color = Color.Gray,
                         fontSize = 20.sp,
                     )
@@ -308,7 +310,7 @@ private fun RecordList(
                                             localContext.startActivity(Intent(localContext, RecordsActivity::class.java))
                                         },
                                     ) {
-                                        Text("Show all", fontSize = MaterialTheme.typography.bodyLarge.fontSize)
+                                        Text(stringResource(R.string.home__records__show_all), fontSize = MaterialTheme.typography.bodyLarge.fontSize)
                                     }
                                 }
                             }

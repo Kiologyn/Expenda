@@ -12,9 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
 import com.kiologyn.expenda.data.db.entity.Account
 import com.kiologyn.expenda.data.db.entity.Record
@@ -29,7 +31,8 @@ import java.time.LocalDateTime
 
 
 class AddRecordActivity : ExpendaTopBarActivity() {
-    override val title: String = "Add record"
+    override val title: String
+        get() = getString(R.string.record_edit__title_add)
     override val actions: @Composable() (RowScope.() -> Unit) = {}
 
     @Composable
@@ -93,7 +96,7 @@ class AddRecordActivity : ExpendaTopBarActivity() {
                     }
                 }
             ) {
-                Text("Add", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.record_edit__add_button), fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
         }
     }

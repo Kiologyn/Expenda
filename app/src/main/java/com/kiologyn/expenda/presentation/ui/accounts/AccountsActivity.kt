@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -28,6 +27,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,10 +45,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
 import com.kiologyn.expenda.data.db.entity.Account
 import com.kiologyn.expenda.presentation.common.sharedcomponent.ExpendaDialog
@@ -60,8 +62,9 @@ import java.util.Currency
 import java.util.Locale
 
 class AccountsActivity : ExpendaTopBarActivity() {
-    override val title: String = "Edit accounts"
-    override val actions: @Composable() (RowScope.() -> Unit) = {
+    override val title: String
+        get() = getString(R.string.accounts__title)
+    override val actions: @Composable (RowScope.() -> Unit) = {
         var dialogOpened by remember { mutableStateOf(false) }
         IconButton(onClick = {
             dialogOpened = true
@@ -211,7 +214,7 @@ class AccountsActivity : ExpendaTopBarActivity() {
                         .fillMaxWidth()
                         .padding(bottom = 20.dp)
                     ,
-                    text = "Edit account",
+                    text = stringResource(R.string.accounts__edit__title),
                     style = MaterialTheme.typography.labelMedium
                 )
                 
@@ -224,7 +227,7 @@ class AccountsActivity : ExpendaTopBarActivity() {
                         onValueChange = { value -> name = value },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text("Name", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                        placeholder = { Text(stringResource(R.string.accounts__edit__name_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant) },
                         shape = RoundedCornerShape(10.dp),
                         colors = TextFieldDefaults.colors(
                             focusedIndicatorColor = Color.Transparent,
@@ -248,13 +251,13 @@ class AccountsActivity : ExpendaTopBarActivity() {
                         contentAlignment = Alignment.Center,
                     ) {
                         AnimatedContent(
-                            targetState = currency?.currencyCode ?: "Choose an account",
+                            targetState = currency?.currencyCode ?: stringResource(R.string.accounts__edit__currency_placeholder),
                             transitionSpec = {
                                 val duration = 300 // ms
                                 fadeIn(tween(duration)) togetherWith fadeOut(tween(duration))
                             },
                             contentAlignment = Alignment.Center,
-                            label = "choose account's animation",
+                            label = "account currency",
                         ) { text ->
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
@@ -312,7 +315,7 @@ class AccountsActivity : ExpendaTopBarActivity() {
                         }) {
                             Icon(
                                 imageVector = Icons.Outlined.Delete,
-                                contentDescription = "delete account",
+                                contentDescription = "Delete account",
                                 tint = Color.Red,
                             )
                         }
@@ -323,13 +326,13 @@ class AccountsActivity : ExpendaTopBarActivity() {
                     TextButton(onClick = {
                         onDismiss()
                     }) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.dialog__cancel))
                     }
                     
                     TextButton(onClick = {
                         onConfirm(name, currency.currencyCode)
                     }) {
-                        Text("OK")
+                        Text(stringResource(R.string.dialog__ok))
                     }
                 }
             }

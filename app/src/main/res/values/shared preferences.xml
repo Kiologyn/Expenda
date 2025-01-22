@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="shared_preferences__general">general</string>
+    <string name="shared_preferences__general" translatable="false">general</string>
 
     <!-- general -->
-    <string name="shared_preferences__first_launch">first_launch</string>
+    <string name="shared_preferences__first_launch" translatable="false">first_launch</string>
 </resources>

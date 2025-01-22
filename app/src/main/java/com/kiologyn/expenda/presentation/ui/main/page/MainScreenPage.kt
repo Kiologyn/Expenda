@@ -5,18 +5,19 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.kiologyn.expenda.R
 import com.kiologyn.expenda.presentation.ui.main.page.home.HomePage
 import com.kiologyn.expenda.presentation.ui.main.page.statistics.StatisticsPage
 
 
 enum class MainScreenPage(
-    val displayName: String,
+    val displayName: @Composable () -> String,
     val icon: @Composable () -> Unit,
     val page: @Composable () -> Unit,
 ) {
     HOME(
-        "Home",
+        { stringResource(R.string.nav_bar__home) },
         {
             Icon(
                 imageVector = Icons.Rounded.Home,
@@ -26,7 +27,7 @@ enum class MainScreenPage(
         { HomePage() },
     ),
     STATISTICS(
-        "Statistics",
+        { stringResource(R.string.nav_bar__statistics) },
         {
             Icon(
                 painter = painterResource(R.drawable.stats),

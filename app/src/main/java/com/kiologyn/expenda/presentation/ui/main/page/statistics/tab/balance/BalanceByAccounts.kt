@@ -18,7 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
 import com.kiologyn.expenda.data.db.dao.AccountWithBalance
 import com.kiologyn.expenda.utils.round
@@ -37,7 +39,7 @@ fun BalanceByAccounts(dateRange: ClosedRange<LocalDate>) {
         })
     }
 
-    StatisticContainer(title = "Balance by accounts") {
+    StatisticContainer(title = stringResource(R.string.statistics__balance__balance_by_accounts__title)) {
         LaunchedEffect(Unit) {
             ExpendaApp.database.apply {
                 accounts = accountDao().getAllWithBalancesPerPeriod(
@@ -77,10 +79,12 @@ fun BalanceByAccounts(dateRange: ClosedRange<LocalDate>) {
                     }
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth((
-                                if (accountsBalancesSum == 0.0) 0.0
-                                else account.balance/accountsBalancesSum
-                            ).toFloat())
+                            .fillMaxWidth(
+                                (
+                                        if (accountsBalancesSum == 0.0) 0.0
+                                        else account.balance / accountsBalancesSum
+                                        ).toFloat()
+                            )
                             .height(BAR_HEIGHT)
                             .background(
                                 Color.White,

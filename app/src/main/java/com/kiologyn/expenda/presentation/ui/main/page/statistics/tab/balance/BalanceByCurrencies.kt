@@ -18,7 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
 import com.kiologyn.expenda.data.db.dao.CurrencyWithBalance
 import com.kiologyn.expenda.utils.round
@@ -37,7 +39,7 @@ fun BalanceByCurrencies(dateRange: ClosedRange<LocalDate>) {
         })
     }
 
-    StatisticContainer(title = "Balance by currencies") {
+    StatisticContainer(title = stringResource(R.string.statistics__balance__balance_by_currencies__title)) {
         LaunchedEffect(Unit) {
             ExpendaApp.database.apply {
                 currencies = accountDao().getAllCurrenciesWithBalancesPerPeriod(
@@ -77,10 +79,12 @@ fun BalanceByCurrencies(dateRange: ClosedRange<LocalDate>) {
                     }
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth((
-                                if (currenciesBalancesSum == 0.0) 0.0
-                                else currency.balance/currenciesBalancesSum
-                            ).toFloat())
+                            .fillMaxWidth(
+                                (
+                                        if (currenciesBalancesSum == 0.0) 0.0
+                                        else currency.balance / currenciesBalancesSum
+                                        ).toFloat()
+                            )
                             .height(BAR_HEIGHT)
                             .background(
                                 Color.White,

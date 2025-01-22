@@ -29,7 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.ViewModel
@@ -60,8 +62,9 @@ private class CategorySpendingViewModel : ViewModel() {
 @Composable
 fun CategorySpending(dateRange: ClosedRange<LocalDate>) {
     val ANIMATION_DURATION = 400
+    val localContext = LocalContext.current
 
-    var titleText by remember { mutableStateOf("Spending by categories") }
+    var titleText by remember { mutableStateOf(localContext.getString(R.string.statistics__categories__category_spending__title)) }
     StatisticContainer(title = titleText) {
         var allAmount by remember { mutableDoubleStateOf(0.toDouble()) }
         var pieData by remember { mutableStateOf<List<CategoryExpense>>(emptyList()) }
@@ -90,8 +93,7 @@ fun CategorySpending(dateRange: ClosedRange<LocalDate>) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(350.dp)
-                    .padding(vertical = 20.dp)
-                ,
+                    .padding(vertical = 20.dp),
                 factory = { context ->
                     PieChart(context).apply {
                         transparentCircleRadius = 0.1f
@@ -103,7 +105,7 @@ fun CategorySpending(dateRange: ClosedRange<LocalDate>) {
                 update = { chart ->
                     chart.apply {
                         highlightValue(null)
-
+                        
                         data = PieData(
                             PieDataSet(
                                 pieData.map {
@@ -114,36 +116,44 @@ fun CategorySpending(dateRange: ClosedRange<LocalDate>) {
                                 minAngleForSlices = 15f
                                 setUsePercentValues(true)
                                 setHoleColor(AndroidColor.TRANSPARENT)
-
-                                centerText = "All\n%.${Helper.ROUND_DECIMAL_PLACES}f".format(allAmount)
+                                
+                                centerText =
+                                    context.getString(R.string.statistics__categories__category_spending__all) +
+                                            "\n%.${Helper.ROUND_DECIMAL_PLACES}f".format(allAmount)
                                 setCenterTextColor(AndroidColor.WHITE)
                                 setCenterTextSize(18f)
-
+                                
                                 colors = ColorTemplate.MATERIAL_COLORS.toMutableList()
-
+                                
                                 valueTextSize = 14f
                                 valueTextColor = AndroidColor.WHITE
                                 valueFormatter = object : ValueFormatter() {
                                     override fun getFormattedValue(value: Float): String {
-                                        val precision = 10.0.pow(Helper.ROUND_DECIMAL_PLACES.toDouble())
-                                        return ((value * precision).toInt() / precision).toString()+"%"
+                                        val precision =
+                                            10.0.pow(Helper.ROUND_DECIMAL_PLACES.toDouble())
+                                        return ((value * precision).toInt() / precision).toString() + "%"
                                     }
                                 }
-
-                                setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-                                    override fun onValueSelected(entry: Entry?, hightlight: Highlight?) {
-                                        selectedCategory = entry?.let { (it as PieEntry).label }.toString()
+                                
+                                setOnChartValueSelectedListener(object :
+                                    OnChartValueSelectedListener {
+                                    override fun onValueSelected(
+                                        entry: Entry?,
+                                        hightlight: Highlight?
+                                    ) {
+                                        selectedCategory =
+                                            entry?.let { (it as PieEntry).label }.toString()
                                     }
-
+                                    
                                     override fun onNothingSelected() {
                                         selectedCategory = null
                                     }
                                 })
                             }
                         )
-
+                        
                         animateY(ANIMATION_DURATION)
-
+                        
                         invalidate()
                     }
                 },
@@ -162,11 +172,10 @@ fun CategorySpending(dateRange: ClosedRange<LocalDate>) {
                         .size(BUTTONS_SIZE)
                         .clip(BUTTONS_SHAPE)
                         .clickable {
-                            titleText = "Spending by categories"
+                            titleText = localContext.getString(R.string.statistics__categories__category_spending__spending_by_categories)
                             selectedCategory = null
                             chosenCategory = null
-                        }
-                    ,
+                        },
                 ) {
                     Icon(
                         modifier = Modifier
@@ -187,11 +196,13 @@ fun CategorySpending(dateRange: ClosedRange<LocalDate>) {
                         .size(BUTTONS_SIZE)
                         .clip(BUTTONS_SHAPE)
                         .clickable {
-                            titleText = "Spending by $selectedCategory subcategories"
+                            titleText = localContext.getString(
+                                R.string.statistics__categories__category_spending__spending_by_subcategories,
+                                selectedCategory,
+                            )
                             chosenCategory = selectedCategory
                             selectedCategory = null
-                        }
-                    ,
+                        },
                 ) {
                     Icon(
                         modifier = Modifier
@@ -223,7 +234,7 @@ fun CategorySpending(dateRange: ClosedRange<LocalDate>) {
 
 @Composable
 private fun CategoryExpenseCard(
-    name: String = "None",
+    name: String = stringResource(R.string.statistics__categories__category_spending__category_expense__placeholder),
     amount: Double = 0.toDouble(),
 ) {
     Row(

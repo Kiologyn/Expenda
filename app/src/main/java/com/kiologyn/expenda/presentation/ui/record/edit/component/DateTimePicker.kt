@@ -32,9 +32,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.utils.Helper
 import com.kiologyn.expenda.utils.format
 import com.kiologyn.expenda.utils.toLocalDateTime
@@ -103,7 +105,7 @@ fun TimePickerDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 20.dp),
-                    text = "Select Time",
+                    text = stringResource(R.string.time_picker_dialog__title),
                     style = MaterialTheme.typography.labelMedium
                 )
                 content()
@@ -147,14 +149,14 @@ fun TimePickerElement(
                             .withHour(timePickerState.hour)
                             .withMinute(timePickerState.minute)
                     }) {
-                        Text("OK")
+                        Text(stringResource(R.string.dialog__ok))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = {
                         openDialog.value = false
                     }) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.dialog__cancel))
                     }
                 }
             ) {
@@ -192,7 +194,7 @@ fun DatePickerElement(
                             dateTimeState.value.toLocalTime(),
                         )
                     }) {
-                        Text("OK")
+                        Text(stringResource(R.string.dialog__ok))
                     }
                 },
                 dismissButton = {
@@ -201,7 +203,7 @@ fun DatePickerElement(
                             openDialog.value = false
                         }
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.dialog__cancel))
                     }
                 }
             ) {

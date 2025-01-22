@@ -34,11 +34,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
 import com.kiologyn.expenda.data.db.entity.Account
 import com.kiologyn.expenda.data.db.entity.Record
@@ -57,7 +59,8 @@ class EditRecordActivity : ExpendaTopBarActivity() {
         const val RECORD_ID_EXTRA_NAME = "recordId"
     }
 
-    override val title: String = "Edit record"
+    override val title: String
+        get() = getString(R.string.record_edit__edit_title)
     override val actions: @Composable() (RowScope.() -> Unit) = {}
 
     private var recordId: Int = -1
@@ -83,7 +86,7 @@ class EditRecordActivity : ExpendaTopBarActivity() {
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "Loading...",
+                    text = stringResource(R.string.record_edit__loading),
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }
@@ -122,7 +125,8 @@ class EditRecordActivity : ExpendaTopBarActivity() {
                 RecordModify(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f),
+                        .weight(1f)
+                    ,
                     dateTimeState = dateTimeState,
                     isIncomeState = isIncomeState,
                     amountState = amountState,
@@ -147,7 +151,8 @@ class EditRecordActivity : ExpendaTopBarActivity() {
                                 .background(
                                     color = MaterialTheme.colorScheme.background,
                                     shape = MaterialTheme.shapes.extraLarge,
-                                ),
+                                )
+                            ,
                             shape = MaterialTheme.shapes.extraLarge,
                             tonalElevation = 6.dp,
                         ) {
@@ -157,12 +162,12 @@ class EditRecordActivity : ExpendaTopBarActivity() {
                                 verticalArrangement = Arrangement.spacedBy(20.dp),
                             ) {
                                 Text(
-                                    text = "Delete confirmation",
+                                    text = stringResource(R.string.record_edit__delete_confirmation__title),
                                     style = MaterialTheme.typography.labelMedium,
                                 )
 
                                 Text(
-                                    text = "Are you sure?",
+                                    text = stringResource(R.string.record_edit__delete_confirmation__text),
                                     style = MaterialTheme.typography.labelLarge,
                                 )
 
@@ -170,13 +175,14 @@ class EditRecordActivity : ExpendaTopBarActivity() {
                                     modifier = Modifier
                                         .height(40.dp)
                                         .padding(top = 5.dp)
-                                        .fillMaxWidth(),
+                                        .fillMaxWidth()
+                                    ,
                                     horizontalArrangement = Arrangement.End,
                                 ) {
                                     TextButton(onClick = {
                                         openDeleteDialog = false
                                     }) {
-                                        Text("No")
+                                        Text(stringResource(R.string.dialog__cancel))
                                     }
                                     TextButton(onClick = {
                                         coroutineScope.launch {
@@ -187,7 +193,7 @@ class EditRecordActivity : ExpendaTopBarActivity() {
                                             finish()
                                         }
                                     }) {
-                                        Text("Yes")
+                                        Text(stringResource(R.string.dialog__ok))
                                     }
                                 }
                             }
@@ -242,7 +248,7 @@ class EditRecordActivity : ExpendaTopBarActivity() {
                             }
                         }
                     ) {
-                        Text("Save", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.record_edit__save_button), fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }

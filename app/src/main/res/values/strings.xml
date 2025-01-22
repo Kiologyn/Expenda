@@ -2,4 +2,52 @@
     <string name="app_name" translatable="false">Expenda</string>
 
     <string name="database_name" translatable="false">database</string>
+    <string name="accounts__title">Edit accounts</string>
+    <string name="accounts__edit__title">Edit account</string>
+    <string name="accounts__edit__name_placeholder">Name</string>
+    <string name="accounts__edit__currency_placeholder">Choose an account</string>
+    <string name="dialog__cancel">Cancel</string>
+    <string name="dialog__ok">OK</string>
+    <string name="records__title">Records</string>
+    <string name="records__empty_list">Empty</string>
+    <string name="record_edit__account_picker_placeholder">Choose an account</string>
+    <string name="record_edit__title_add">Add record</string>
+    <string name="record_edit__add_button">Add</string>
+    <string name="record_edit__amount_placeholder">Amount</string>
+    <string name="statistics__balance__balance_by_accounts__title">Balance by accounts</string>
+    <string name="statistics__balance__balance_by_currencies__title">Balance by currencies</string>
+    <string name="date_range_dialog__title">Select date range</string>
+    <string name="nav_bar__home">Home</string>
+    <string name="nav_bar__statistics">Statistics</string>
+    <string name="home__see_all_records">See All Records</string>
+    <string name="home__records__empty_list">Empty</string>
+    <string name="home__records__show_all">Show all</string>
+    <string name="date_range_picker__chrono_adjuster__this_week">this week</string>
+    <string name="date_range_picker__chrono_adjuster__this_month">this month</string>
+    <string name="date_range_picker__chrono_adjuster__this_year">this year</string>
+    <string name="statistics__balance__daily_balance_trend__title">Daily balance trend</string>
+    <string name="statistics__cash_flow__income_expense_difference__title">Cash flow</string>
+    <string name="statistics__cash_flow__income_expense_difference__income">Income</string>
+    <string name="statistics__cash_flow__income_expense_difference__expense">Expense</string>
+    <string name="statistics__categories__category_spending__category_expense__placeholder">None</string>
+    <string name="statistics__categories__category_spending__title">Spending by categories</string>
+    <string name="statistics__categories__category_spending__spending_by_categories">Spending by categories</string>
+    <string name="statistics__categories__category_spending__spending_by_subcategories">Spending by %1$s subcategories</string>
+    <string name="statistics__categories__category_spending__all">All</string>
+    <string name="record_edit__loading">Loading...</string>
+    <string name="record_edit__delete_confirmation__title">Delete confirmation</string>
+    <string name="record_edit__delete_confirmation__text">Are you sure?</string>
+    <string name="record_edit__save_button">Save</string>
+    <string name="record_edit__edit_title">Edit record</string>
+    <string name="time_picker_dialog__title">Select Time</string>
+    <string name="record_edit__description__placeholder">Description</string>
+    <string name="record_edit__category_picker__placeholder">Choose a category</string>
+    <string name="category_selector__modify_dialog__title__add">Add a category</string>
+    <string name="category_selector__modify_dialog__title__edit">Rename the category</string>
+    <string name="category_selector__modify_dialog__name__placeholder">Category name</string>
+    <string name="category_selector__title">Choose a category</string>
+    <string name="subcategory_selector__modify_dialog__title__add">Add a subcategory</string>
+    <string name="subcategory_selector__modify_dialog__title__edit">Rename the subcategory</string>
+    <string name="subcategory_selector__modify_dialog__name__placeholder">Subcategory name</string>
+    <string name="subcategory_selector__title">Choose a subcategory</string>
 </resources>

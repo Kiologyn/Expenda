@@ -11,7 +11,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.utils.toLocalDate
 import com.kiologyn.expenda.utils.toSeconds
 import java.time.LocalDate
@@ -43,12 +45,12 @@ fun DateRangeInputDialog(
                     }
                     onConfirm(if (startDate == null || endDate == null) null else startDate..endDate)
                 }) {
-                    Text("OK")
+                    Text(stringResource(R.string.dialog__ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = onDismiss) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.dialog__cancel))
                 }
             }
         ) {
@@ -57,10 +59,9 @@ fun DateRangeInputDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(500.dp)
-                    .padding(16.dp)
-                ,
+                    .padding(16.dp),
                 title = {
-                    Text("Select date range")
+                    Text(stringResource(R.string.date_range_dialog__title))
                 },
                 showModeToggle = false,
             )

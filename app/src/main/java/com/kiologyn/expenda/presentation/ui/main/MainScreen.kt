@@ -40,7 +40,7 @@ fun MainScreen() {
                 MainScreenPage.entries.forEach { page ->
                     NavigationBarItem(
                         icon = page.icon,
-                        label = { Text(page.displayName) },
+                        label = { Text(page.displayName()) },
                         selected = page == currentPage,
                         onClick = {
                             if (page != currentPage) {

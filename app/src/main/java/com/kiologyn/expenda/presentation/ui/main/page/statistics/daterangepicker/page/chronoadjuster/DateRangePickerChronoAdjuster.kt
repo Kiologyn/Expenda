@@ -21,6 +21,7 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,19 +56,16 @@ fun DateRangePickerPageChronoAdjuster(
         resetShift()
     }
 
-    val labelText by remember(dateRange) { mutableStateOf(
-        if (
-            dateRange.start.compareTo(
-                LocalDate.now().with(dateRangeAdjuster.temporalAdjusterToStart)
-            ) == 0
-        ) dateRangeAdjuster.display
-        else when (dateRangeAdjuster) {
-            DateRangeAdjuster.WEEK -> "${dateRange.start.format(Helper.DATE_FORMAT)} - ${dateRange.endInclusive.format(
-                Helper.DATE_FORMAT)}"
-            DateRangeAdjuster.MONTH -> dateRange.start.format(Helper.DATE_MY_FORMAT)
-            DateRangeAdjuster.YEAR -> dateRange.start.year.toString()
-        }
-    ) }
+    val labelText = if (
+        dateRange.start.compareTo(
+            LocalDate.now().with(dateRangeAdjuster.temporalAdjusterToStart)
+        ) == 0
+    ) dateRangeAdjuster.display()
+    else when (dateRangeAdjuster) {
+        DateRangeAdjuster.WEEK -> "${dateRange.start.format(Helper.DATE_FORMAT)} - ${dateRange.endInclusive.format(Helper.DATE_FORMAT)}"
+        DateRangeAdjuster.MONTH -> dateRange.start.format(Helper.DATE_MY_FORMAT)
+        DateRangeAdjuster.YEAR -> dateRange.start.year.toString()
+    }
 
     val shiftDates: (Boolean) -> Unit = { isForward ->
         val localFromDate = dateRange.start.plus(if (isForward) 1 else -1, dateRangeAdjuster.chronoUnit)
@@ -125,7 +123,7 @@ fun DateRangePickerPageChronoAdjuster(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    text = dateRangeAdjusterOption.display,
+                                    text = dateRangeAdjusterOption.display(),
                                     fontSize = 18.sp,
                                 )
                             },

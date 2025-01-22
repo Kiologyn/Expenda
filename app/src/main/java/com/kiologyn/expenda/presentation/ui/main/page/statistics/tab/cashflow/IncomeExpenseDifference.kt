@@ -22,9 +22,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
 import com.kiologyn.expenda.utils.round
 import com.kiologyn.expenda.utils.toSeconds
@@ -64,7 +66,7 @@ fun IncomeExpenseDifference(dateRange: ClosedRange<LocalDate>) {
 
     val viewModel: IncomeExpenseDifferenceViewModel = viewModel()
 
-    StatisticContainer(title = "Cash flow") {
+    StatisticContainer(title = stringResource(R.string.statistics__cash_flow__income_expense_difference__title)) {
         LaunchedEffect(Unit) {
             viewModel.retrieveData(dateRange)
         }
@@ -110,8 +112,8 @@ fun IncomeExpenseDifference(dateRange: ClosedRange<LocalDate>) {
             )
 
             listOf(
-                listOf("Income", viewModel.income, incomeBarAnimatable.value, Color.Green),
-                listOf("Expense", viewModel.expense, expenseBarAnimatable.value, Color.Red),
+                listOf(stringResource(R.string.statistics__cash_flow__income_expense_difference__income), viewModel.income, incomeBarAnimatable.value, Color.Green),
+                listOf(stringResource(R.string.statistics__cash_flow__income_expense_difference__expense), viewModel.expense, expenseBarAnimatable.value, Color.Red),
             ).forEach { (name, value, valueBarAnimatable, color) ->
                 Column(
                     modifier = Modifier

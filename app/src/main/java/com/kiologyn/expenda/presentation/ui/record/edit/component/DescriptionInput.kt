@@ -12,7 +12,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kiologyn.expenda.R
 import com.kiologyn.expenda.presentation.theme.Black40
 
 
@@ -26,7 +28,7 @@ fun DescriptionInput(
         onValueChange = { value -> descriptionState.value = value },
         singleLine = false,
         modifier = modifier,
-        placeholder = { Text("Description", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+        placeholder = { Text(stringResource(R.string.record_edit__description__placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant) },
         shape = RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,

@@ -37,7 +37,7 @@ fun Statistics(
                 pagerState.animateScrollToPage(tabIndex)
             }
         },
-        tabs = StatisticsTab.entries.map { it.displayName },
+        tabs = StatisticsTab.entries.map { it.displayName() },
     )
     HorizontalPager(
         modifier = Modifier.fillMaxSize(),
