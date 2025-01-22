@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
-        android:name=".ExpendaApp"
+        android:name=".app.android.ExpendaApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,11 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Expenda"
-        tools:targetApi="31"
+        android:localeConfig="@xml/locale_config"
         tools:ignore="DiscouragedApi,LockedOrientationActivity">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".app.host.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Expenda"
             android:screenOrientation="portrait">
@@ -28,31 +28,37 @@
         </activity>
 
         <activity
-            android:name=".ui.record.modify.component.categorypicker.CategorySelectorActivity"
+            android:name=".presentation.ui.record.edit.component.categorypicker.CategorySelectorActivity"
             android:theme="@style/Theme.Expenda"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".ui.record.modify.component.categorypicker.SubcategorySelectorActivity"
+            android:name=".presentation.ui.record.edit.component.categorypicker.SubcategorySelectorActivity"
             android:theme="@style/Theme.Expenda"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".ui.record.AddActivity"
+            android:name=".presentation.ui.record.AddRecordActivity"
             android:theme="@style/Theme.Expenda"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".ui.record.EditActivity"
+            android:name=".presentation.ui.record.EditRecordActivity"
             android:theme="@style/Theme.Expenda"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".ui.records.RecordsActivity"
+            android:name=".presentation.ui.records.RecordsActivity"
+            android:theme="@style/Theme.Expenda"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".presentation.ui.accounts.AccountsActivity"
             android:theme="@style/Theme.Expenda"
             android:screenOrientation="portrait">
         </activity>

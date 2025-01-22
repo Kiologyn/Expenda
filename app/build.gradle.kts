@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.kiologyn.expenda"
-        minSdk = 28
+        minSdk = 33
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -52,31 +52,42 @@ android {
 }
 
 dependencies {
-    implementation(libs.core.ktx)
-    implementation(libs.lifecycle.runtime.ktx)
-    implementation(libs.activity.compose)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.ui)
-    implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
-    debugImplementation(libs.ui.tooling)
-    debugImplementation(libs.ui.test.manifest)
+    // kotlin
+    implementation(libs.kotlin.reflect)
 
-    // Navigation Bar
+    // compose
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    debugImplementation(libs.compose.ui.tooling)
+    implementation(libs.compose.ui.tooling.preview)
+    debugImplementation(libs.compose.ui.manifest)
+    implementation(libs.compose.material)
+    implementation(libs.compose.material3)
+
+    // compose navigation
     implementation(libs.navigation.compose)
 
-    // Storage Room
+    // junit
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+
+    // various
+    implementation(libs.core.ktx)
+    androidTestImplementation(libs.espresso.core)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.activity.compose)
+
+    // room persistent library
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
     kapt(libs.room.compiler)
 
-    implementation(libs.material)
+    // DataStore
+    implementation(libs.datastore)
+    implementation(libs.datastore.core)
+    implementation(libs.datastore.preferences)
 
-    implementation(libs.mpandroidchart)
+    // third-party
+    implementation(libs.philjay.mpandroidchart)
 }
