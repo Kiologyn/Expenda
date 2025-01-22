@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 fun CategoryPicker(
     modifier: Modifier = Modifier,
     subcategoryState: MutableState<Subcategory?> = remember { mutableStateOf(null) },
+    isIncome: Boolean,
     activityResultRegistry: ActivityResultRegistry,
 ) {
     val categoryText by remember(subcategoryState.value) { mutableStateOf(subcategoryState.value?.name) }
@@ -67,7 +68,14 @@ fun CategoryPicker(
     Box(
         modifier = modifier
             .clickable {
-                startForResult.launch(Intent(localContext, CategorySelectorActivity::class.java))
+                startForResult.launch(
+                    Intent(
+                        localContext,
+                        CategorySelectorActivity::class.java
+                    ).apply {
+                        putExtra(CategorySelectorActivity.RECEIVED_ID_EXTRA_NAME, isIncome)
+                    }
+                )
             }
         ,
         contentAlignment = Alignment.Center,

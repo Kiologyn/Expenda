@@ -1,31 +1,26 @@
 package com.kiologyn.expenda.data.db.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.kiologyn.expenda.data.db.entity.Category
 
 
 @Dao
 interface CategoryDao {
+    @Insert
+    suspend fun insert(category: Category)
+    @Update
+    suspend fun update(category: Category)
     @Query("""
-        INSERT INTO category (name)
-        SELECT :name
+        SELECT * FROM category WHERE category.isIncome = :isIncome
     """)
-    fun create(name: String)
-    @Query("""
-        SELECT * FROM category
-    """)
-    suspend fun getAll(): List<Category>
+    suspend fun getAll(isIncome: Boolean): List<Category>
     @Query("""
         SELECT * FROM category WHERE category.id = :id
     """)
     suspend fun getById(id: Int): Category?
-    @Query("""
-        UPDATE category
-        SET name = :newName
-        WHERE name = :oldName
-    """)
-    suspend fun rename(oldName: String, newName: String)
     @Query("""
         DELETE
         FROM category

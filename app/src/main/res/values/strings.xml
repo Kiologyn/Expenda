@@ -50,4 +50,5 @@
     <string name="subcategory_selector__modify_dialog__title__edit">Rename the subcategory</string>
     <string name="subcategory_selector__modify_dialog__name__placeholder">Subcategory name</string>
     <string name="subcategory_selector__title">Choose a subcategory</string>
+    <string name="category_selector__modify_dialog__is_income">Is Income</string>
 </resources>

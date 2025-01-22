@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -77,6 +78,9 @@ fun RecordModify(
             )
         }
 
+        LaunchedEffect(isIncomeState.value) {
+            subcategoryState.value = null
+        }
         CategoryPicker(
             modifier = Modifier
                 .fillMaxWidth()
@@ -84,8 +88,9 @@ fun RecordModify(
                 .background(elementsBackground, shape)
                 .clip(shape)
             ,
-            subcategoryState,
-            activityResultRegistry,
+            subcategoryState = subcategoryState,
+            isIncome = isIncomeState.value,
+            activityResultRegistry = activityResultRegistry,
         )
 
         AccountPicker(

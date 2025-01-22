@@ -1,10 +1,6 @@
 package com.kiologyn.expenda.presentation.ui.record.edit.component.categorypicker
 
-import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,12 +21,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.Divider
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -66,7 +61,6 @@ import com.kiologyn.expenda.data.db.entity.Subcategory
 import com.kiologyn.expenda.presentation.common.sharedcomponent.ExpendaActivity
 import com.kiologyn.expenda.presentation.theme.Black40
 import com.kiologyn.expenda.presentation.theme.Black50
-import com.kiologyn.expenda.presentation.theme.ExpendaTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -74,6 +68,7 @@ import kotlinx.coroutines.launch
 
 class CategorySelectorActivity : ExpendaActivity() {
     companion object {
+        const val RECEIVED_ID_EXTRA_NAME = "receivedCategory"
         const val SELECTED_ID_EXTRA_NAME = "selectedCategory"
     }
     
@@ -86,8 +81,9 @@ class CategorySelectorActivity : ExpendaActivity() {
         var refresh by remember { mutableStateOf(true) }
         LaunchedEffect(refresh) {
             if (refresh) {
+                val isIncome = intent.getBooleanExtra(RECEIVED_ID_EXTRA_NAME, false)
                 ExpendaApp.database.apply {
-                    categories = categoryDao().getAll()
+                    categories = categoryDao().getAll(isIncome = isIncome)
                 }
                 refresh = false
             }
@@ -102,6 +98,9 @@ class CategorySelectorActivity : ExpendaActivity() {
         ) }
         var textInputValue by remember(chosenCategory) { mutableStateOf(
             chosenCategory?.name ?: ""
+        ) }
+        var isIncomeValue by remember(chosenCategory) { mutableStateOf(
+            chosenCategory?.isIncome ?: false
         ) }
         var openModifyDialog by remember { mutableStateOf(false) }
         if (openModifyDialog)
@@ -136,29 +135,45 @@ class CategorySelectorActivity : ExpendaActivity() {
                             style = MaterialTheme.typography.labelMedium,
                         )
                         
-                        TextField(
-                            value = textInputValue,
-                            onValueChange = { value ->
-                                if (value.length <= Helper.CATEGORIES_MAX_LENGTH)
-                                    textInputValue = value
-                            },
-                            singleLine = true,
-                            placeholder = {
-                                Text(
-                                    text = stringResource(R.string.category_selector__modify_dialog__name__placeholder),
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                        ) {
+                            TextField(
+                                value = textInputValue,
+                                onValueChange = { value ->
+                                    if (value.length <= Helper.CATEGORIES_MAX_LENGTH)
+                                        textInputValue = value
+                                },
+                                singleLine = true,
+                                placeholder = {
+                                    Text(
+                                        text = stringResource(R.string.category_selector__modify_dialog__name__placeholder),
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                },
+                                shape = RoundedCornerShape(10.dp),
+                                colors = TextFieldDefaults.colors(
+                                    focusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    
+                                    unfocusedContainerColor = Black40,
+                                    focusedContainerColor = Black50,
                                 )
-                            },
-                            shape = RoundedCornerShape(10.dp),
-                            colors = TextFieldDefaults.colors(
-                                focusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                
-                                unfocusedContainerColor = Black40,
-                                focusedContainerColor = Black50,
                             )
-                        )
+                            
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Checkbox(
+                                    checked = isIncomeValue,
+                                    onCheckedChange = { value ->
+                                        isIncomeValue = value
+                                    }
+                                )
+                                Text(text = stringResource(R.string.category_selector__modify_dialog__is_income))
+                            }
+                        }
                         
                         Row(
                             modifier = Modifier
@@ -208,12 +223,16 @@ class CategorySelectorActivity : ExpendaActivity() {
                                         val categoryName = textInputValue.trim(' ', '\n')
                                         categoryDao().run {
                                             if (chosenCategory == null)
-                                                create(categoryName)
+                                                insert(Category(
+                                                    name = categoryName,
+                                                    isIncome = isIncomeValue,
+                                                ))
                                             else
-                                                rename(
-                                                    chosenCategory!!.name,
-                                                    categoryName,
-                                                )
+                                                update(Category(
+                                                    id = chosenCategory!!.id,
+                                                    name = categoryName,
+                                                    isIncome = isIncomeValue,
+                                                ))
                                         }
                                     }
                                 }.invokeOnCompletion {
@@ -304,8 +323,7 @@ class CategorySelectorActivity : ExpendaActivity() {
                                         openModifyDialog = true
                                     } else {
                                         val startActivityIntent = Intent(applicationContext, SubcategorySelectorActivity::class.java)
-                                        startActivityIntent.putExtra(
-                                            SubcategorySelectorActivity.RECEIVED_ID_EXTRA_NAME, category.id)
+                                        startActivityIntent.putExtra(SubcategorySelectorActivity.RECEIVED_ID_EXTRA_NAME, category.id)
                                         
                                         activityResultRegistry.register(
                                             "subcategoryRegisterKey",

@@ -7,6 +7,7 @@ import androidx.datastore.core.DataStore
 import com.kiologyn.expenda.R
 import com.kiologyn.expenda.db.ExpendaDatabase
 import com.kiologyn.expenda.data.db.entity.Account
+import com.kiologyn.expenda.data.db.entity.Category
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -18,6 +19,11 @@ import java.util.prefs.Preferences
 class ExpendaApp : Application() {
     private lateinit var SHARED_PREFERENCES__FIRST_LAUNCH_STRING: String
     private val DEFAULT_CATEGORIES: Map<String, List<String>> = mapOf(
+        "Income" to listOf(
+            "Wage",
+            "Gift",
+            "Gambling",
+        ),
         "Food" to listOf(
             "Groceries",
             "Cafe/Bar",
@@ -40,11 +46,6 @@ class ExpendaApp : Application() {
         "Investments" to listOf(
             "Savings",
             "Finance",
-        ),
-        "Income" to listOf(
-            "Wage",
-            "Gift",
-            "Gambling",
         ),
     )
     private val DEFAULT_ACCOUNTS: List<Account> = listOf(
@@ -84,7 +85,10 @@ class ExpendaApp : Application() {
                     val subcategoryDao = subcategoryDao()
                     val categoryDao = categoryDao()
                     for ((categoryName, subcategories) in DEFAULT_CATEGORIES) {
-                        categoryDao.create(categoryName)
+                        categoryDao.insert(Category(
+                            name = categoryName,
+                            isIncome = categoryName == "Income",
+                        ))
                         for (subcategoryName in subcategories)
                             subcategoryDao.create(categoryName, subcategoryName)
                     }
@@ -108,5 +112,6 @@ class ExpendaApp : Application() {
     override fun onTerminate() {
         super.onTerminate()
         coroutineScope.cancel()
+        database.close()
     }
 }

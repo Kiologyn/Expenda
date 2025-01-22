@@ -48,4 +48,5 @@
     <string name="subcategory_selector__modify_dialog__title__edit">Переименовать подкатегорию</string>
     <string name="subcategory_selector__modify_dialog__name__placeholder">Название подкатегории</string>
     <string name="subcategory_selector__title">Выберите подкатегорию</string>
+    <string name="category_selector__modify_dialog__is_income">Доход</string>
 </resources>
