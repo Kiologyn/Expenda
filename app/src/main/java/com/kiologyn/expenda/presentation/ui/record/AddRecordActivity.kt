@@ -23,7 +23,7 @@ import com.kiologyn.expenda.data.db.entity.Record
 import com.kiologyn.expenda.data.db.entity.Subcategory
 import com.kiologyn.expenda.utils.toSeconds
 import com.kiologyn.expenda.presentation.common.sharedcomponent.ExpendaTopBarActivity
-import com.kiologyn.expenda.presentation.ui.record.edit.RecordModify
+import com.kiologyn.expenda.presentation.ui.record.modify.RecordModify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

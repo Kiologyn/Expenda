@@ -49,4 +49,16 @@
     <string name="subcategory_selector__modify_dialog__name__placeholder">Название подкатегории</string>
     <string name="subcategory_selector__title">Выберите подкатегорию</string>
     <string name="category_selector__modify_dialog__is_income">Доход</string>
+    <string name="nav_bar__savings">Сбережения</string>
+    <string name="saving_edit__title__edit">Редактировать сбережение</string>
+    <string name="savings__empty_list">Нету сбережений</string>
+    <string name="saving_edit__loading">Загрузка</string>
+    <string name="saving_edit__save">Сохранить</string>
+    <string name="saving_edit__withdraw">Вывести</string>
+    <string name="saving_edit__bank__placeholder">Банк</string>
+    <string name="saving_edit__opening_date__placeholder">Дата открытия</string>
+    <string name="saving_edit__closing_date__placeholder">Дата закрытия</string>
+    <string name="saving_edit__deposit_amount__placeholder">Сумма депозита</string>
+    <string name="saving_edit__percent__placeholder">Процент</string>
+    <string name="saving_edit__title__add">Добавить сбережение</string>
 </resources>

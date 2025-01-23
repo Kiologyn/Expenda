@@ -28,13 +28,13 @@
         </activity>
 
         <activity
-            android:name=".presentation.ui.record.edit.component.categorypicker.CategorySelectorActivity"
+            android:name=".presentation.ui.record.modify.component.categorypicker.CategorySelectorActivity"
             android:theme="@style/Theme.Expenda"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".presentation.ui.record.edit.component.categorypicker.SubcategorySelectorActivity"
+            android:name=".presentation.ui.record.modify.component.categorypicker.SubcategorySelectorActivity"
             android:theme="@style/Theme.Expenda"
             android:screenOrientation="portrait">
         </activity>
@@ -59,6 +59,12 @@
 
         <activity
             android:name=".presentation.ui.accounts.AccountsActivity"
+            android:theme="@style/Theme.Expenda"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".presentation.ui.savings.SavingEditActivity"
             android:theme="@style/Theme.Expenda"
             android:screenOrientation="portrait">
         </activity>

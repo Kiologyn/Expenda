@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.presentation.ui.record
+package com.kiologyn.expenda.presentation.ui.savings
 
 import android.os.Bundle
 import androidx.compose.foundation.background
@@ -26,8 +26,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -42,101 +42,89 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
+import com.kiologyn.expenda.data.db.dao.SavingWithAccount
 import com.kiologyn.expenda.data.db.entity.Account
-import com.kiologyn.expenda.data.db.entity.Record
-import com.kiologyn.expenda.data.db.dao.RecordWithSubcategory
-import com.kiologyn.expenda.data.db.entity.Subcategory
-import com.kiologyn.expenda.utils.toLocalDateTime
-import com.kiologyn.expenda.utils.toSeconds
+import com.kiologyn.expenda.data.db.entity.Saving
 import com.kiologyn.expenda.presentation.common.sharedcomponent.ExpendaTopBarActivity
-import com.kiologyn.expenda.presentation.ui.record.modify.RecordModify
+import com.kiologyn.expenda.presentation.ui.savings.modify.SavingModify
+import com.kiologyn.expenda.utils.toLocalDate
+import com.kiologyn.expenda.utils.toSeconds
 import kotlinx.coroutines.launch
-import kotlin.math.abs
+import java.time.LocalDate
 
-
-class EditRecordActivity : ExpendaTopBarActivity() {
+class SavingEditActivity : ExpendaTopBarActivity() {
     companion object {
-        const val RECORD_ID_EXTRA_NAME = "recordId"
+        const val SAVING_ID_EXTRA_NAME = "savingId"
     }
-
+    
     override val title: String
-        get() = getString(R.string.record_edit__edit_title)
+        get() = if (savingId == -1) getString(R.string.saving_edit__title__add)
+            else getString(R.string.saving_edit__title__edit)
     override val actions: @Composable() (RowScope.() -> Unit) = {}
-
-    private var recordId: Int = -1
-    private var recordState: MutableState<RecordWithSubcategory?> = mutableStateOf(null)
+    
+    private var savingId: Int = -1
     override fun onCreate(savedInstanceState: Bundle?) {
-        recordId = intent.getIntExtra(RECORD_ID_EXTRA_NAME, recordId)
-
+        savingId = intent.getIntExtra(SAVING_ID_EXTRA_NAME, savingId)
+        
         super.onCreate(savedInstanceState)
     }
-
+    
     @Composable
     override fun Content() {
+        var saving: SavingWithAccount? by remember { mutableStateOf(null) }
+        
         LaunchedEffect(Unit) {
             ExpendaApp.database.apply {
-                recordState.value = recordDao().getByIdWithSubcategory(recordId)
+                saving = savingDao().getById(savingId)
             }
-            if (recordState.value == null) finish()
         }
-
-        if (recordState.value == null) {
+        
+        if (savingId != -1 && saving == null) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = stringResource(R.string.record_edit__loading),
+                    text = stringResource(R.string.saving_edit__loading),
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }
         } else {
-            val dateTimeState = remember { mutableStateOf(recordState.value!!.datetime.toLocalDateTime()) }
-            val isIncomeState = remember { mutableStateOf(recordState.value!!.amount >= 0) }
-            val amountState = remember { mutableStateOf<Double?>(abs(recordState.value!!.amount)) }
-            val subcategoryState = remember {
-                mutableStateOf<Subcategory?>(
-                    Subcategory(
-                        id = recordState.value!!.subcategoryId,
-                        name = recordState.value!!.subcategoryName,
-                        idCategory = recordState.value!!.subcategoryCategoryId,
-                    )
+            val accountState = remember { mutableStateOf(saving?.let {
+                Account(
+                    id = it.accountId,
+                    name = it.accountName,
+                    currencyCode = it.accountCurrencyCode,
                 )
-            }
-            val accountState = remember {
-                mutableStateOf<Account?>(
-                    Account(
-                        id = recordState.value!!.accountId,
-                        name = recordState.value!!.accountName,
-                        currencyCode = recordState.value!!.accountCurrencyCode,
-                    )
-                )
-            }
-            val descriptionState = remember { mutableStateOf(recordState.value!!.description) }
-
+            } ) }
+            val bankState = remember { mutableStateOf(saving?.bank ?: "") }
+            val depositOpeningDateState = remember { mutableStateOf<LocalDate?>(saving?.run { depositOpeningDate.toLocalDate() } ?: LocalDate.now()) }
+            val depositClosingDateState = remember { mutableStateOf(saving?.run { depositClosingDate?.toLocalDate() }) }
+            val depositAmountState = remember { mutableDoubleStateOf(saving?.depositAmount ?: 0.0) }
+            val percentState = remember { mutableDoubleStateOf(saving?.percent ?: 0.0) }
+            
             val LINE_HEIGHT = 50.dp
-
+            
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(20.dp, 50.dp)
                 ,
             ) {
-                RecordModify(
+                SavingModify(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
                     ,
-                    dateTimeState = dateTimeState,
-                    isIncomeState = isIncomeState,
-                    amountState = amountState,
-                    subcategoryState = subcategoryState,
                     accountState = accountState,
-                    descriptionState = descriptionState,
+                    bankState = bankState,
+                    depositOpeningDateState = depositOpeningDateState,
+                    depositClosingDateState = depositClosingDateState,
+                    depositAmountState = depositAmountState,
+                    percentState = percentState,
                     lineHeight = LINE_HEIGHT,
-                    activityResultRegistry = activityResultRegistry,
                 )
-
+                
                 val coroutineScope = rememberCoroutineScope()
                 var openDeleteDialog by remember { mutableStateOf(false) }
                 if (openDeleteDialog) {
@@ -165,12 +153,12 @@ class EditRecordActivity : ExpendaTopBarActivity() {
                                     text = stringResource(R.string.record_edit__delete_confirmation__title),
                                     style = MaterialTheme.typography.labelMedium,
                                 )
-
+                                
                                 Text(
                                     text = stringResource(R.string.record_edit__delete_confirmation__text),
                                     style = MaterialTheme.typography.labelLarge,
                                 )
-
+                                
                                 Row(
                                     modifier = Modifier
                                         .height(40.dp)
@@ -187,7 +175,7 @@ class EditRecordActivity : ExpendaTopBarActivity() {
                                     TextButton(onClick = {
                                         coroutineScope.launch {
                                             ExpendaApp.database.apply {
-                                                recordDao().deleteById(recordState.value!!.id)
+                                                savingDao().deleteById(saving!!.id)
                                             }
                                         }.invokeOnCompletion {
                                             finish()
@@ -200,55 +188,82 @@ class EditRecordActivity : ExpendaTopBarActivity() {
                         }
                     }
                 }
-
+                
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    IconButton(
-                        modifier = Modifier
-                            .height(LINE_HEIGHT)
-                            .aspectRatio(1f)
-                        ,
-                        onClick = { openDeleteDialog = true },
-                        colors = IconButtonDefaults.outlinedIconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.errorContainer,
-                            contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                        ),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Delete,
-                            contentDescription = null,
-                        )
+                    if (savingId != -1) {
+                        IconButton(
+                            modifier = Modifier
+                                .height(LINE_HEIGHT)
+                                .aspectRatio(1f)
+                            ,
+                            onClick = { openDeleteDialog = true },
+                            colors = IconButtonDefaults.outlinedIconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer,
+                                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                            ),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Delete,
+                                contentDescription = null,
+                            )
+                        }
+                        
+                        Button(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(LINE_HEIGHT)
+                            ,
+                            onClick = {
+                                coroutineScope.launch {
+                                    // TODO: withdraw
+                                }.invokeOnCompletion {
+                                    finish()
+                                }
+                            }
+                        ) {
+                            Text(stringResource(R.string.saving_edit__withdraw), fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        }
                     }
+                    
                     Button(
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .weight(1f)
                             .height(LINE_HEIGHT)
                         ,
                         onClick = {
                             if (
-                                amountState.value in listOf(null, 0.0) ||
-                                subcategoryState.value == null
+                                bankState.value == "" ||
+                                accountState.value == null ||
+                                depositOpeningDateState.value == null ||
+                                depositAmountState.doubleValue <= 0
                             ) return@Button // TODO: highlight inputs with red
-
-                            val record = Record(
-                                id = recordState.value!!.id,
-                                datetime = dateTimeState.value.toSeconds(),
-                                amount = (if (isIncomeState.value) 1 else -1) * amountState.value!!,
-                                description = descriptionState.value.trim(' ', '\n'),
-                                idSubcategory = subcategoryState.value!!.id,
+                            
+                            val newSaving = Saving(
+                                id = saving?.id ?: 0,
                                 idAccount = accountState.value!!.id,
+                                bank = bankState.value,
+                                depositOpeningDate = depositOpeningDateState.value!!.toSeconds(),
+                                depositClosingDate = depositClosingDateState.value?.toSeconds(),
+                                depositAmount = depositAmountState.doubleValue,
+                                percent = percentState.doubleValue,
                             )
                             coroutineScope.launch {
                                 ExpendaApp.database.apply {
-                                    recordDao().upsert(record)
+                                    savingDao().apply {
+                                        if (savingId == -1)
+                                            insert(newSaving)
+                                        else
+                                            upsert(newSaving)
+                                    }
                                 }
                             }.invokeOnCompletion {
                                 finish()
                             }
                         }
                     ) {
-                        Text(stringResource(R.string.record_edit__save_button), fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.saving_edit__save), fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }

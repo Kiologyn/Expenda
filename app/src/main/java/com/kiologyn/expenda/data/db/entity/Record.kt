@@ -13,13 +13,13 @@ import androidx.room.PrimaryKey
             entity = Subcategory::class,
             parentColumns = ["id"],
             childColumns = ["idSubcategory"],
-            onDelete = ForeignKey.NO_ACTION,
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = Account::class,
             parentColumns = ["id"],
             childColumns = ["idAccount"],
-            onDelete = ForeignKey.NO_ACTION,
+            onDelete = ForeignKey.CASCADE,
         ),
     ]
 )

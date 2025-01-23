@@ -11,8 +11,10 @@ import com.kiologyn.expenda.data.db.entity.Category
 import com.kiologyn.expenda.data.db.dao.CategoryDao
 import com.kiologyn.expenda.data.db.entity.Record
 import com.kiologyn.expenda.data.db.dao.RecordDao
+import com.kiologyn.expenda.data.db.dao.SavingDao
 import com.kiologyn.expenda.data.db.entity.Subcategory
 import com.kiologyn.expenda.data.db.dao.SubcategoryDao
+import com.kiologyn.expenda.data.db.entity.Saving
 
 
 @Database(
@@ -21,6 +23,7 @@ import com.kiologyn.expenda.data.db.dao.SubcategoryDao
         Subcategory::class,
         Category::class,
         Account::class,
+        Saving::class,
     ],
     version = 1,
     exportSchema = false,
@@ -30,6 +33,7 @@ abstract class ExpendaDatabase : RoomDatabase() {
     abstract fun subcategoryDao(): SubcategoryDao
     abstract fun categoryDao(): CategoryDao
     abstract fun accountDao(): AccountDao
+    abstract fun savingDao(): SavingDao
 
     companion object {
         fun build(context: Context): ExpendaDatabase {

@@ -2,6 +2,8 @@ package com.kiologyn.expenda.utils
 
 import android.content.Context
 import android.widget.Toast
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -9,6 +11,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import kotlin.math.pow
 
 
@@ -74,3 +77,15 @@ fun Double.round(precision: Int = Helper.ROUND_DECIMAL_PLACES): Double {
 }
 
 fun Boolean.toInt(): Int = if (this) 1 else 0
+
+fun calculateSavingProfit(
+    startDate: LocalDate,
+    endDate: LocalDate?,
+    depositAmount: Double,
+    percent: Double,
+): Double {
+    val daysBetween = ChronoUnit.DAYS.between(startDate, endDate ?: LocalDate.now())
+    val dailyInterestRate = percent / 100 / 365
+    val profit = depositAmount * dailyInterestRate * daysBetween
+    return BigDecimal(profit).setScale(2, RoundingMode.HALF_UP).toDouble()
+}

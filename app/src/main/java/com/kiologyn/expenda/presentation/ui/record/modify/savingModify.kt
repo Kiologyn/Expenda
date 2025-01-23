@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.presentation.ui.record.edit
+package com.kiologyn.expenda.presentation.ui.record.modify
 
 import androidx.activity.result.ActivityResultRegistry
 import androidx.compose.foundation.background
@@ -21,12 +21,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kiologyn.expenda.data.db.entity.Account
 import com.kiologyn.expenda.data.db.entity.Subcategory
-import com.kiologyn.expenda.presentation.ui.record.edit.component.AccountPicker
-import com.kiologyn.expenda.presentation.ui.record.edit.component.AmountInput
-import com.kiologyn.expenda.presentation.ui.record.edit.component.ArrowButton
-import com.kiologyn.expenda.presentation.ui.record.edit.component.DateTimePicker
-import com.kiologyn.expenda.presentation.ui.record.edit.component.DescriptionInput
-import com.kiologyn.expenda.presentation.ui.record.edit.component.categorypicker.CategoryPicker
+import com.kiologyn.expenda.presentation.ui.record.modify.component.AccountPicker
+import com.kiologyn.expenda.presentation.ui.record.modify.component.AmountInput
+import com.kiologyn.expenda.presentation.ui.record.modify.component.ArrowButton
+import com.kiologyn.expenda.presentation.ui.record.modify.component.DateTimePicker
+import com.kiologyn.expenda.presentation.ui.record.modify.component.DescriptionInput
+import com.kiologyn.expenda.presentation.ui.record.modify.component.categorypicker.CategoryPicker
 import java.time.LocalDateTime
 
 

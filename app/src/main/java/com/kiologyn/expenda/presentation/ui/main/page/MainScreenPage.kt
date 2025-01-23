@@ -8,6 +8,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.kiologyn.expenda.R
 import com.kiologyn.expenda.presentation.ui.main.page.home.HomePage
+import com.kiologyn.expenda.presentation.ui.main.page.savings.SavingsPage
 import com.kiologyn.expenda.presentation.ui.main.page.statistics.StatisticsPage
 
 
@@ -35,5 +36,15 @@ enum class MainScreenPage(
             )
         },
         { StatisticsPage() },
+    ),
+    SAVINGS(
+        { stringResource(R.string.nav_bar__savings) },
+        {
+            Icon(
+                painter = painterResource(R.drawable.savings),
+                contentDescription = "Savings page",
+            )
+        },
+        { SavingsPage() }
     ),
 }

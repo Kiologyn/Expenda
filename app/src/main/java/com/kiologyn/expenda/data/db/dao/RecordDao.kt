@@ -105,10 +105,11 @@ interface RecordDao {
     """)
     suspend fun getBalance(): Double
     @Query("""
-        SELECT COALESCE(SUM(record.amount), 0)
-        FROM record
-        JOIN account ON record.idAccount = account.id
-        WHERE record.idAccount = :idAccount
+        SELECT COALESCE(SUM(record.amount), 0) - COALESCE(SUM(saving.depositAmount), 0) AS result
+        FROM account
+        LEFT JOIN record ON record.idAccount = account.id
+        LEFT JOIN saving ON saving.idAccount = account.id
+        WHERE account.id = :idAccount;
     """)
     suspend fun getBalanceByAccount(idAccount: Int): Double
     @Query("""

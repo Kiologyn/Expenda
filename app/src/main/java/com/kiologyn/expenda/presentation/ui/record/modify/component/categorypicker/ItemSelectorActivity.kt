@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.presentation.ui.record.edit.component.categorypicker
+package com.kiologyn.expenda.presentation.ui.record.modify.component.categorypicker
 
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts

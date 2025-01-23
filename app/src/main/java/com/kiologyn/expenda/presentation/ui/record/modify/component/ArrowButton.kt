@@ -1,4 +1,4 @@
-package com.kiologyn.expenda.presentation.ui.record.edit.component
+package com.kiologyn.expenda.presentation.ui.record.modify.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing

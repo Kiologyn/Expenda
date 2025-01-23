@@ -97,14 +97,14 @@ fun HomePage() {
                     HorizontalPager(state = accountsPagerState) {accountIndex -> when (accountIndex) {
                         in accounts.indices -> {
                             val account = accounts[accountIndex]
-                            var balanceValue by remember { mutableStateOf<Double?>(null) }
+                            var balance by remember { mutableStateOf<Double?>(null) }
 
                             var refreshBalance by remember { mutableStateOf(true) }
                             LaunchedEffect(refreshBalance) {
                                 if (refreshBalance) {
-                                    balanceValue = null
+                                    balance = null
                                     ExpendaApp.database.apply {
-                                        balanceValue = recordDao().getBalanceByAccount(account.id)
+                                        balance = recordDao().getBalanceByAccount(account.id)
                                     }
                                     refreshBalance = false
                                 }
@@ -127,8 +127,11 @@ fun HomePage() {
                                 TextButton(onClick = { refreshBalance = true }) {
                                     Text(
                                         modifier = Modifier.fillMaxWidth(0.5f),
-                                        text = balanceValue?.let{
-                                            "%.${Helper.ROUND_DECIMAL_PLACES}f".format(it) + Currency.getInstance(account.currencyCode).symbol
+                                        text = balance?.let{ balance ->
+                                            listOf(
+                                                "%.${Helper.ROUND_DECIMAL_PLACES}f".format(balance),
+                                                Currency.getInstance(account.currencyCode).symbol,
+                                            ).joinToString("")
                                         } ?: "•••",
                                         textAlign = TextAlign.Center,
                                         fontSize = 30.sp,
@@ -245,6 +248,7 @@ private fun RecordList(
             modifier = Modifier
                 .fillMaxWidth(0.75f)
                 .height(2.dp)
+            ,
         )
 
         val pullRefreshState = rememberPullRefreshState(refresh, { refresh = true })

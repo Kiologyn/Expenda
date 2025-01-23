@@ -1,5 +1,8 @@
-package com.kiologyn.expenda.presentation.ui.record.edit.component
+package com.kiologyn.expenda.presentation.ui.savings.modify.component.categorypicker
 
+import android.content.Intent
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -11,65 +14,87 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kiologyn.expenda.R
 import com.kiologyn.expenda.app.android.ExpendaApp
-import com.kiologyn.expenda.data.db.entity.Account
+import com.kiologyn.expenda.data.db.entity.Subcategory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun AccountPicker(
+fun CategoryPicker(
     modifier: Modifier = Modifier,
-    accountState: MutableState<Account?>,
+    subcategoryState: MutableState<Subcategory?> = remember { mutableStateOf(null) },
+    isIncome: Boolean,
+    activityResultRegistry: ActivityResultRegistry,
 ) {
-    val accountText by remember(accountState.value) {
-        mutableStateOf(accountState.value?.run { "$name ($currencyCode)" })
-    }
-    var menuOpened by remember { mutableStateOf(false) }
+    val categoryText by remember(subcategoryState.value) { mutableStateOf(subcategoryState.value?.name) }
 
-    var accounts: List<Account> by remember { mutableStateOf(emptyList()) }
-    LaunchedEffect(Unit) {
-        ExpendaApp.database.apply {
-            accounts = accountDao().getAll()
+    val localContext = LocalContext.current
+    val startForResult = remember(activityResultRegistry) {
+        activityResultRegistry.register(
+            "categoryRegisterKey",
+            ActivityResultContracts.StartActivityForResult(),
+        ) { result ->
+            val subcategoryId = result.data?.getIntExtra(
+                CategorySelectorActivity.SELECTED_ID_EXTRA_NAME,
+                -1,
+            )
+            CoroutineScope(Dispatchers.IO).launch {
+                ExpendaApp.database.apply {
+                    subcategoryState.value = subcategoryDao().getById(
+                        subcategoryId ?: subcategoryState.value?.id ?: -1
+                    )
+                }
+            }
         }
     }
 
     Box(
-        modifier = modifier.clickable { menuOpened = true },
+        modifier = modifier
+            .clickable {
+                startForResult.launch(
+                    Intent(
+                        localContext,
+                        CategorySelectorActivity::class.java
+                    ).apply {
+                        putExtra(CategorySelectorActivity.RECEIVED_ID_EXTRA_NAME, isIncome)
+                    }
+                )
+            }
+        ,
         contentAlignment = Alignment.Center,
     ) {
         AnimatedContent(
-            targetState = accountText ?: stringResource(R.string.record_edit__account_picker_placeholder),
+            targetState = categoryText ?: stringResource(R.string.record_edit__category_picker__placeholder),
             transitionSpec = {
                 val duration = 300 // ms
                 fadeIn(tween(duration)) togetherWith fadeOut(tween(duration))
             },
             contentAlignment = Alignment.Center,
-            label = "account",
+            label = "choose category's animation",
         ) { text ->
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = text,
                 textAlign = TextAlign.Center,
                 color =
-                    if (accountText == null) MaterialTheme.colorScheme.onSurfaceVariant
+                    if (categoryText == null) MaterialTheme.colorScheme.onSurfaceVariant
                     else MaterialTheme.colorScheme.onSurface
                 ,
             )
@@ -84,28 +109,5 @@ fun AccountPicker(
             contentDescription = null,
             tint = Color.Gray,
         )
-
-        DropdownMenu(
-            expanded = menuOpened,
-            onDismissRequest = { menuOpened = false },
-        ) {
-            accounts.forEach { account ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = account.name,
-                            fontSize = 18.sp,
-                        )
-                    },
-                    onClick = {
-                        accountState.value = account
-                        menuOpened = false
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                    ,
-                )
-            }
-        }
     }
 }
